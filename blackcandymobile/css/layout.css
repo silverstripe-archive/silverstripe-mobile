@@ -1,0 +1,48 @@
+/** 
+* SilverStripe Mobile Theme http://www.silverstripe.com
+*/
+/* Misc Styles and defaults 
+-------------------------------------------- */
+* { margin:0; padding:0; }
+body { color:#333; font-family:Helvetica, Arial, sans-serif; font-size:62.5%; line-height:18px; }
+html { background:#626467 url(../images/bg.gif) repeat; }
+table { border-collapse:collapse; border-spacing:0; }
+caption, th, td { text-align:left; font-weight:normal; }
+img { max-width:320px; }
+.clear { clear:both; }
+/* CONTAINER */
+#Container { background:#ffffff; padding:0 0 5px 0;	width:100%; }
+#Layout { padding:10px 15px; }
+/* HEADER */
+#Header { background: #58ade1 url(../images/header.gif) repeat-x left center; margin:0 10px; overflow:hidden; }
+#Header h1 { color:#fff; padding:10px 0 10px 10px; }
+#Header p { color:#fff; clear:left; font-size:12px; font-weight:bold; margin:0 0 0 10px; }
+/* NAVIGATION */
+#Navigation { background:#4ea3d7; margin:0 10px; overflow:hidden; padding:10px 0px 0px 0px; 
+-moz-border-radius-bottomleft:10px; -webkit-border-bottom-left-radius:10px; border-bottom-left-radius:10px;
+-moz-border-radius-bottomright:10px; -webkit-border-bottom-right-radius:10px; border-bottom-right-radius:10px; }  
+#Navigation ul li { display:block; list-style:none; margin:0; }
+#Navigation ul li a { color:#fff; display:block; font-size:14px; font-weight:bold; line-height:36px; padding:0 0 0 9px; text-decoration:none; }
+#Navigation ul li.current,
+#Navigation ul li.section { border-left:1px solid #CCC; border-right:1px solid #CCC; }
+#Navigation ul li.current a,
+#Navigation ul.sub li.current a { background:#fff; color:#444; }
+#Navigation ul li.section a { background:#fff; color:#999; }
+#Navigation ul.sub { background:#ffffff; padding:0; }
+#Navigation ul.sub li { border:none; }
+#Navigation ul.sub li a { border-top:1px solid #CCC; color:#999; padding-left:18px; }
+/* FOOTER */
+#Footer { background:#4EA3D7; clear:both; margin:10px; padding:10px 15px; text-align:center; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px; }
+#Footer p { color:#fff; font-size:11px; text-align:center; }
+#Footer a { color: #fff; text-decoration:none; }
+#Footer a:hover { color:#fff; text-decoration:underline; }
+/* PAGE COMMENTS */
+#PageComments_holder { border-top:1px solid #CCCCCC; padding-top:18px; }
+#CommentHolder ul { margin:0; padding:0; list-style:none; }
+#CommentHolder li { margin:0; padding:0; list-style:none; }
+#PageComments li  { border-bottom:1px solid #CCCCCC; margin:0 0 18px 0; padding:0 0 18px 0; }
+#PageComments .info { font-size:12px; font-style:italic; }
+#PageComments .actionLinks { overflow:hidden; }
+#PageComments .actionLinks li { border:none; display:block; float:left; margin:0 9px 0 0; padding:0; }
+#DeleteComments, #CommentsRSSFeed { margin-bottom:0; padding:0; font-size:12px; }
+.typography .spamlink, .typography .deletelink { background:#3E91C4; color:#FFFFFF; font-size:12px; padding:3px 6px; text-align:center; }
