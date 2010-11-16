@@ -18,7 +18,7 @@ class MobileSiteControllerExtension extends Extension {
 	 * Override the default behavior to ensure that if this is a mobile device
 	 * or if they are on the configured mobile domain then they receive the mobile site.
 	 */
-	public function onBeforeInit() {
+	public function onAfterInit() {
 		$config = SiteConfig::current_site_config();
 
 		// Redirect users to the full site if requested (cookie expires in 30 minutes)
