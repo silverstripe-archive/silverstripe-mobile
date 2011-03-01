@@ -2,6 +2,10 @@
 
 class MobileSiteAccessModifier extends DataObjectDecorator{
 	
+	/**
+	 * modify the CanViewType field to hold additional viewer options
+	 * @return Array
+	 */
 	function extraStatics(){
 		return array(
 			"db" => array(
@@ -9,6 +13,8 @@ class MobileSiteAccessModifier extends DataObjectDecorator{
 			)
 		);
 	} 
+	
+	
 	
 	function updateCMSFields($fields){       
 		$fields->removeFieldFromTab("Root.Access", "CanViewType");
@@ -36,6 +42,12 @@ class MobileSiteAccessModifier extends DataObjectDecorator{
 		$fields->addFieldToTab("Root.Access", $viewersOptionsField, "WhoCanEditHeader");
 	}
 	
+	
+	/**
+	 * check whether the user can view the page with respect to the 
+	 * device he is using to browse
+	 * @return boolean
+	 */
 	function canView($member = null){ 
 		$canView = null;
 		$siteTree = $this->owner;
