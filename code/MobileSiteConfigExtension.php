@@ -159,9 +159,9 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain')),
 				new LiteralField('FullSiteDomainHelpText', '<label class="helpText">' . _t('MobileSiteConfig.FULLSITEDOMAINHELP', '(e.g. "mysite.com"). This usually doesn\'t need to be changed') . '</label>'),
 				new DropdownField('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
-				new DropdownField('IPhoneTheme', _t('MobileSiteConfig.IPHONETHEME', 'iPhone theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
-				new DropdownField('IPadTheme', _t('MobileSiteConfig.IPADTHEME', 'iPad theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
-				new DropdownField('AndriodTheme', _t('MobileSiteConfig.ANDRIODTHEME', 'Andriod theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
+				new DropdownField('IPhoneTheme', _t('MobileSiteConfig.IPHONETHEME', 'iPhone theme (leave this if you are not wishing to have a separate theme for iPhones)'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
+				new DropdownField('IPadTheme', _t('MobileSiteConfig.IPADTHEME', 'iPad theme (leave this if you are not wishing to have a separate theme for iPads)'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
+				new DropdownField('AndriodTheme', _t('MobileSiteConfig.ANDRIODTHEME', 'Andriod theme (leave this if you are not wishing to have a separate theme for Andriod devices)'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
 			)
 		);
 	}
