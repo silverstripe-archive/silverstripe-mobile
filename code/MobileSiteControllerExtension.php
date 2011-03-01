@@ -33,20 +33,37 @@ class MobileSiteControllerExtension extends Extension {
 		} elseif(!empty($_COOKIE['fullSite'])) {
 			return; // nothing more to be done
 		}
-
+        
 		// If the user requested the mobile domain, set the right theme
-		if($this->onMobileDomain()) {
-			SSViewer::set_theme($config->MobileTheme);
+		if($this->onMobileDomain()) {              
+			SSViewer::set_theme($this->getSuitableTheme());
 		}
 
 		// User just wants to see a theme, but no redirect occurs
-		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
-			SSViewer::set_theme($config->MobileTheme);
+		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') { 
+			SSViewer::set_theme($this->getSuitableTheme());
 		}
 
 		// If on a mobile device, but not on the mobile domain and has been setup for redirection
 		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
 			return $this->owner->redirect($config->MobileDomain);
+		}
+	} 
+	
+	/**
+	 * Return the correct theme according to the device 
+	 * $return string
+	 */              
+	function getSuitableTheme(){          
+		$config = SiteConfig::current_site_config();
+		if(MobileBrowserDetector::is_iphone() && $config->IPhoneTheme){
+			return $config->IPhoneTheme;
+		}elseif(MobileBrowserDetector::is_ipad() && $config->IPadTheme){
+			return $config->IPadTheme;
+		}elseif(MobileBrowserDetector::is_iphone() && $config->AndriodTheme){
+			return $config->AndroidTheme;
+		}else{
+			return $config->MobileTheme;
 		}
 	}
 
