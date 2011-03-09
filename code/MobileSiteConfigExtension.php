@@ -37,9 +37,6 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				'MobileDomain' => 'Varchar(50)',
 				'FullSiteDomain' => 'Varchar(50)',
 				'MobileTheme' => 'Varchar(255)',
-				'IPhoneTheme' => 'Varchar(255)',
-				'IPadTheme' => 'Varchar(255)',
-				'AndroidTheme' => 'Varchar(255)',
 				'MobileSiteType' => 'Varchar(255)'
 			),
 			'defaults' => array(
@@ -47,6 +44,9 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				'FullSiteDomain' => 'http://' . $_SERVER['HTTP_HOST'],
 				'MobileTheme' => 'blackcandymobile',
 				'MobileSiteType' => 'Disabled'
+			),
+			'has_many' => array(
+				'Themes' => 'MobileDeviceTheme'
 			)
 		);
 	}
@@ -159,9 +159,13 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain')),
 				new LiteralField('FullSiteDomainHelpText', '<label class="helpText">' . _t('MobileSiteConfig.FULLSITEDOMAINHELP', '(e.g. "mysite.com"). This usually doesn\'t need to be changed') . '</label>'),
 				new DropdownField('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
-				new DropdownField('IPhoneTheme', _t('MobileSiteConfig.IPHONETHEME', 'iPhone theme (leave this if you are not wishing to have a separate theme for iPhones)'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
-				new DropdownField('IPadTheme', _t('MobileSiteConfig.IPADTHEME', 'iPad theme (leave this if you are not wishing to have a separate theme for iPads)'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)')),
-				new DropdownField('AndriodTheme', _t('MobileSiteConfig.ANDRIODTHEME', 'Andriod theme (leave this if you are not wishing to have a separate theme for Andriod devices)'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
+				
+				new LiteralField('MultipleThemes', '<label class="helpText">' . _t('MobileSiteConfig.MULTIPLETHEMES', 'If you want to add themes specifically for different mobile devices, please use the table below. Just leave it if you are using only one mobile theme for every device.') . '</label>'),     
+				
+				new ComplexTableField($this, 'Themes', 'MobileDeviceTheme', array(
+					'Device' => 'Device',
+					'Theme' => 'Theme'
+				), 'getPopupFields')
 			)
 		);
 	}

@@ -19,11 +19,11 @@ class MobileBrowserDetector {
 		return (stripos($_SERVER['HTTP_USER_AGENT'], 'android') !== false) ? true : false;
 	}
 
-	public static function is_iphone() {
+	public static function is_iphone() {     
 		return (preg_match('/(ipod|iphone)/i', $_SERVER['HTTP_USER_AGENT'])) ? true : false;
 	} 
 	
-	public static function is_ipad() {
+	public static function is_ipad() {      
 		return (stripos($_SERVER['HTTP_USER_AGENT'], 'ipad') !== false) ? true : false;
 	}
 
@@ -49,7 +49,7 @@ class MobileBrowserDetector {
 	 * 
 	 * @return bool
 	 */
-	public static function is_mobile() {  
+	public static function is_mobile() {      
 		$isMobile = false;
 		$agent = $_SERVER['HTTP_USER_AGENT'];
 		$accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';

@@ -54,14 +54,24 @@ class MobileSiteControllerExtension extends Extension {
 	 * Return the correct theme according to the device 
 	 * $return string
 	 */              
-	function getSuitableTheme(){          
-		$config = SiteConfig::current_site_config();
-		if(MobileBrowserDetector::is_iphone() && $config->IPhoneTheme){
-			return $config->IPhoneTheme;
-		}elseif(MobileBrowserDetector::is_ipad() && $config->IPadTheme){
-			return $config->IPadTheme;
-		}elseif(MobileBrowserDetector::is_iphone() && $config->AndriodTheme){
-			return $config->AndroidTheme;
+	function getSuitableTheme(){  
+		$config = SiteConfig::current_site_config();   
+		$device = '';
+		if(MobileBrowserDetector::is_iphone()){
+			$device = 'iphone';
+		}elseif(MobileBrowserDetector::is_ipad()){
+			$device = 'ipad';
+		}elseif(MobileBrowserDetector::is_android()){
+			$device = 'android';
+		}elseif(MobileBrowserDetector::is_blackberry()){
+       		$device = 'blackberry';
+		}
+		elseif(MobileBrowserDetector::is_palm()){
+       		$device = 'palm';
+		}                           
+		
+		if(0 != strcmp($device, '') && $theme = DataObject::get_one('MobileDeviceTheme', "Device = '{$device}' AND ConfigurationID = {$config->ID}")){  
+			return $theme->Theme;
 		}else{
 			return $config->MobileTheme;
 		}
