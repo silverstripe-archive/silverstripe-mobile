@@ -27,17 +27,33 @@ class MobileSiteControllerExtension extends Extension {
 		self::$is_mobile = false;
 		$config = SiteConfig::current_site_config();
 
-		// Redirect users to the full site if requested (cookie expires in 30 minutes)
+		// Enforce the site (cookie expires in 30 minutes)
 		if(isset($_GET['fullSite'])) {
-			$_COOKIE['fullSite'] = 1;
-			setcookie('fullSite', 1, time() + self::$cookie_expire_time);
+			$fullSite = (int)$_GET['fullSite'];
+			$_COOKIE['fullSite'] = $fullSite;
+			setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time);
 		}
 
-		// Redirect to the full site if user requested
-		if($this->onMobileDomain() && !empty($_COOKIE['fullSite']) && $config->MobileSiteType == 'RedirectToDomain') {
-			return $this->owner->redirect($config->FullSiteDomain);
-		} elseif(!empty($_COOKIE['fullSite'])) {
-			return; // nothing more to be done
+		// Site is being forced via flag or cookie
+		if (isset($_COOKIE['fullSite'])) {
+			// Full site requested
+			if ($_COOKIE['fullSite']) {
+				if($this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
+					return $this->owner->redirect($config->FullSiteDomain);
+				}
+
+				return;
+			}
+			// Mobile site requested
+			else {
+				if(!$this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
+					return $this->owner->redirect($config->MobileDomain);
+				}
+
+				SSViewer::set_theme($config->MobileTheme);
+				self::$is_mobile = true;
+				return;
+			}
 		}
 
 		// If the user requested the mobile domain, set the right theme

@@ -124,6 +124,17 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$this->assertEquals($config->FullSiteDomain, $headers['Location']);
 	}
 
+	public function testRedirectToMobileSiteFromDesktop() {
+		$config = SiteConfig::current_site_config();
+		$config->MobileSiteType = 'RedirectToDomain';
+		$config->write();
+		$page = $this->objFromFixture('Page', 'page');
+		$response = $this->get($page->URLSegment . '?fullSite=0', null, null, array('fullSite' => 0));
+		$headers = $response->getHeaders();
+		$this->assertEquals(302, $response->getStatusCode());
+		$this->assertEquals($config->MobileDomain, $headers['Location']);
+	}
+
 	public function testNoMobileRedirectWhenFullSiteSessionSetOnMobile() {
 		$_SERVER['HTTP_USER_AGENT'] = 'Android';
 		$config = SiteConfig::current_site_config();
@@ -200,6 +211,11 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$_SERVER['HTTP_USER_AGENT'] = 'immobile browser';
 		$response = $this->get($page->URLSegment);
 		$this->assertFalse(MobileSiteControllerExtension::is_mobile());
+
+		// Force mobile site
+		$_SERVER['HTTP_USER_AGENT'] = 'immobile browser';
+		$response = $this->get($page->URLSegment.'?fullSite=0');
+		$this->assertTrue(MobileSiteControllerExtension::is_mobile());
 
 		$config->MobileSiteType = 'MobileThemeOnly';
 		$config->write();
