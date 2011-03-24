@@ -15,10 +15,16 @@ class MobileSiteControllerExtension extends Extension {
 	public static $cookie_expire_time = 1800;
 
 	/**
+	 * Stores state information as to which site is currently served.
+	 */
+	private static $is_mobile = false;
+
+	/**
 	 * Override the default behavior to ensure that if this is a mobile device
 	 * or if they are on the configured mobile domain then they receive the mobile site.
 	 */
 	public function onAfterInit() {
+		self::$is_mobile = false;
 		$config = SiteConfig::current_site_config();
 
 		// Redirect users to the full site if requested (cookie expires in 30 minutes)
@@ -37,17 +43,29 @@ class MobileSiteControllerExtension extends Extension {
 		// If the user requested the mobile domain, set the right theme
 		if($this->onMobileDomain()) {
 			SSViewer::set_theme($config->MobileTheme);
+			self::$is_mobile = true;
 		}
 
 		// User just wants to see a theme, but no redirect occurs
 		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
 			SSViewer::set_theme($config->MobileTheme);
+			self::$is_mobile = true;
 		}
 
 		// If on a mobile device, but not on the mobile domain and has been setup for redirection
 		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
 			return $this->owner->redirect($config->MobileDomain);
 		}
+	}
+
+	/**
+	 * Provide state information. We can't always rely on current theme, 
+	 * as the user may elect to use the same theme for both sites.
+	 *
+	 * Useful for example for template conditionals.
+	 */
+	static public function is_mobile() {
+		return self::$is_mobile;
 	}
 
 	/**

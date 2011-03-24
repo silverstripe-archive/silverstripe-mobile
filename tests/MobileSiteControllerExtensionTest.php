@@ -192,4 +192,37 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$this->assertTrue($controller->IsBlackBerry());
 	}
 
+	public function testIsMobile() {
+		$page = $this->objFromFixture('Page', 'page');
+		$config = SiteConfig::current_site_config();
+
+		// Immobile device
+		$_SERVER['HTTP_USER_AGENT'] = 'immobile browser';
+		$response = $this->get($page->URLSegment);
+		$this->assertFalse(MobileSiteControllerExtension::is_mobile());
+
+		$config->MobileSiteType = 'MobileThemeOnly';
+		$config->write();
+		// Mobile device
+		$_SERVER['HTTP_USER_AGENT'] = 'iPhone';
+		$response = $this->get($page->URLSegment);
+		$this->assertTrue(MobileSiteControllerExtension::is_mobile());
+
+		// Force full site
+		$_SERVER['HTTP_USER_AGENT'] = 'iPhone';
+		$response = $this->get($page->URLSegment.'?fullSite=1');
+		$this->assertFalse(MobileSiteControllerExtension::is_mobile());
+
+		$config->MobileSiteType = 'RedirectToDomain';
+		$config->write();
+		// Mobile domain
+		$_SERVER['HTTP_USER_AGENT'] = 'anything can be here';
+		$_SERVER['HTTP_HOST'] = 'm.' . $_SERVER['HTTP_HOST'];
+		$page = $this->objFromFixture('Page', 'page');
+		$response = $this->get($page->URLSegment);
+		$this->assertTrue(MobileSiteControllerExtension::is_mobile());
+
+
+	}
+
 }
