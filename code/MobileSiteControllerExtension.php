@@ -26,6 +26,11 @@ class MobileSiteControllerExtension extends Extension {
 	public function onAfterInit() {
 		self::$is_mobile = false;
 		$config = SiteConfig::current_site_config();
+		
+		// If we've accessed the homepage as /home/, then we redirect to / and don't want to double redirect here
+		if (Director::redirected_to()) {
+			return;
+		}
 
 		// Enforce the site (cookie expires in 30 minutes)
 		if(isset($_GET['fullSite'])) {
