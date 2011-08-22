@@ -47,10 +47,6 @@ Please keep in mind that the mobile domain must point to your site before it wil
    in general, e.g. Android or iPhone, but not the browser and features of the device
  * Only tested on Android and iPhone devices. Other devices NOT tested
 
-## Known issues
-
- * "Full site" link doesn't work if you're redirecting mobile devices to a mobile domain
-
 ## Future enhancements
 
  * Search form in the default theme
