@@ -36,7 +36,14 @@ class MobileSiteControllerExtension extends Extension {
 		if(isset($_GET['fullSite'])) {
 			$fullSite = (int)$_GET['fullSite'];
 			$_COOKIE['fullSite'] = $fullSite;
-			setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time);
+
+			//use the host of the desktop version of the site to set cross-(sub)domain cookie
+			if (!empty($config->FullSiteDomain)) {
+				$parsedURL = parse_url($config->FullSiteDomain); 
+				setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time,null,'.'.$parsedURL['host']);
+			} else {	//otherwise just use a normal cookie with the default domain
+				setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time);
+			}
 		}
 
 		// Site is being forced via flag or cookie
