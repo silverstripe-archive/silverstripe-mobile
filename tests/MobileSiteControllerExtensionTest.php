@@ -237,8 +237,24 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$page = $this->objFromFixture('Page', 'page');
 		$response = $this->get($page->URLSegment);
 		$this->assertTrue(MobileSiteControllerExtension::is_mobile());
-
-
+	}
+	
+	function testIsMobileWithPorts() {
+		$page = $this->objFromFixture('Page', 'page');
+		$config = SiteConfig::current_site_config();
+		$config->MobileDomain = 'domain:81';
+		$config->FullSiteDomain = 'domain:80';
+		$config->write();
+		
+		$_SERVER['HTTP_HOST'] = 'domain:81';
+		$response = $this->get($page->URLSegment);
+		$this->assertTrue(MobileSiteControllerExtension::is_mobile());
+		
+		$_SERVER['HTTP_HOST'] = 'domain:80';
+		$response = $this->get($page->URLSegment);
+		$this->assertFalse(MobileSiteControllerExtension::is_mobile());
+		
+		
 	}
 
 }

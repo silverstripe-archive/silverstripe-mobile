@@ -115,7 +115,9 @@ class MobileSiteControllerExtension extends Extension {
 	public function onMobileDomain() {
 		$config = SiteConfig::current_site_config();
 		$parts = parse_url($config->MobileDomain);
-		if(isset($parts['host']) && $parts['host'] == $_SERVER['HTTP_HOST']) {
+		$compare = @$parts['host'];
+		if(@$parts['port']) $compare .= ':' . $parts['port'];
+		if($compare && $compare == $_SERVER['HTTP_HOST']) {
 			return true;
 		} else {
 			return false;
