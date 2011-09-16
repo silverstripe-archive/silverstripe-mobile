@@ -39,7 +39,8 @@ class MobileSiteConfigExtensionTest extends SapphireTest {
 
 	public function tearDown() {
 		parent::tearDown();
-		exec('rm -rf ' . TEMP_FOLDER . '/mobile-test-copy-theme/');
+		$themeFolder = TEMP_FOLDER . '/mobile-test-copy-theme/';
+		if(file_exists($themeFolder)) Filesystem::removeFolder($themeFolder);
 	}
 
 }
