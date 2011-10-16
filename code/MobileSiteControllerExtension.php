@@ -26,6 +26,7 @@ class MobileSiteControllerExtension extends Extension {
 	public function onAfterInit() {
 		self::$is_mobile = false;
 		$config = SiteConfig::current_site_config();
+		$request = $this->owner->getRequest();
 		
 		// If we've accessed the homepage as /home/, then we redirect to / and don't want to double redirect here
 		if (Director::redirected_to()) {
@@ -33,9 +34,9 @@ class MobileSiteControllerExtension extends Extension {
 		}
 
 		// Enforce the site (cookie expires in 30 minutes)
-		if(isset($_GET['fullSite'])) {
-			$fullSite = (int)$_GET['fullSite'];
-			$_COOKIE['fullSite'] = $fullSite;
+		$fullSite = $request->getVar('fullSite');
+		if(is_numeric($fullSite)) {
+			Cookie::set('fullSite', (int)$fullSite);
 
 			//use the host of the desktop version of the site to set cross-(sub)domain cookie
 			if (!empty($config->FullSiteDomain)) {
@@ -47,11 +48,12 @@ class MobileSiteControllerExtension extends Extension {
 		}
 
 		// Site is being forced via flag or cookie
-		if (isset($_COOKIE['fullSite'])) {
+		$fullSiteCookie = Cookie::get('fullSite');
+		if(is_numeric($fullSiteCookie)) {
 			// Full site requested
-			if ($_COOKIE['fullSite']) {
+			if($fullSiteCookie) {
 				if($this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
-					return $this->owner->redirect($config->FullSiteDomain);
+					return $this->owner->redirect($config->FullSiteDomain, 301);
 				}
 
 				return;
