@@ -61,7 +61,7 @@ class MobileSiteControllerExtension extends Extension {
 			// Mobile site requested
 			else {
 				if(!$this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
-					return $this->owner->redirect($config->MobileDomain);
+					return $this->owner->redirect($config->MobileDomain, 301);
 				}
 
 				SSViewer::set_theme($config->MobileTheme);
@@ -84,7 +84,7 @@ class MobileSiteControllerExtension extends Extension {
 
 		// If on a mobile device, but not on the mobile domain and has been setup for redirection
 		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
-			return $this->owner->redirect($config->MobileDomain);
+			return $this->owner->redirect($config->MobileDomain, 301);
 		}
 	}
 
