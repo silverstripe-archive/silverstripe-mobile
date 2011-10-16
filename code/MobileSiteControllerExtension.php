@@ -99,7 +99,9 @@ class MobileSiteControllerExtension extends Extension {
 	}
 
 	/**
-	 * Return whether the user is on the mobile version of the website
+	 * Return whether the user is on the mobile version of the website.
+	 * Caution: This only has an effect when "MobileSiteType" is configured as "RedirectToDomain".
+	 * 
 	 * @return boolean
 	 */
 	public function onMobileDomain() {
@@ -111,13 +113,28 @@ class MobileSiteControllerExtension extends Extension {
 			return false;
 		}
 	}
+	
+	/**
+	 * @return boolean
+	 */
+	public function isMobile() {
+		return MobileSiteControllerExtension::$is_mobile;
+	}
 
 	/**
 	 * Return a link to the full site.
+	 * 
 	 * @return string
 	 */
 	public function FullSiteLink() {
-		return $this->owner->Link() . '?fullSite=1';
+		return Controller::join_links($this->owner->Link(), '?fullSite=1');
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function MobileSiteLink() {
+		return Controller::join_links($this->owner->Link(), '?fullSite=0');
 	}
 
 	/**
