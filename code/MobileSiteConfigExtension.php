@@ -37,7 +37,7 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				'MobileDomain' => 'Varchar(50)',
 				'FullSiteDomain' => 'Varchar(50)',
 				'MobileTheme' => 'Varchar(255)',
-				'MobileSiteType' => 'Varchar(255)'
+				'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")',
 			),
 			'defaults' => array(
 				'MobileDomain' => 'http://m.' . $_SERVER['HTTP_HOST'],
