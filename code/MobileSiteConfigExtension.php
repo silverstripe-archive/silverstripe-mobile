@@ -115,14 +115,20 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	 * as a field on SiteConfig, then make sure that it's copied
 	 * into the themes directory from the mobile module.
 	 */
-	public function requireDefaultRecords() {
-		if($this->owner->getField('MobileTheme') == 'blackcandymobile') {
-			$this->copyDefaultTheme();
+	public function augmentDatabase() {
+		$defaultThemes = array('blackcandymobile', 'jquerymobile');
+		$currentTheme = $this->owner->getField('MobileTheme');
+		if(!$currentTheme || in_array($currentTheme, $defaultThemes)) {
+			$this->copyDefaultTheme($currentTheme);
 		}
 	}
 
-	public static function copyDefaultTheme() {
-		$src = '../' . MOBILE_DIR . '/blackcandymobile';
+	/**
+	 * @param String
+	 */
+	public static function copyDefaultTheme($theme = null) {
+		if(!$theme) $theme = 'blackcandymobile';
+		$src = '../' . MOBILE_DIR . '/themes/' . $theme;
 		$dst = self::get_theme_copy_path();
 
 		if(!file_exists($dst)) {
@@ -130,13 +136,17 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 			if(is_writable($dst)) {
 				rcopy($src, $dst);
 				DB::alteration_message(
-					'Default mobile theme "blackcandymobile" has been copied into the themes directory',
+					sprintf('Default mobile theme "%s" has been copied into the themes directory', $theme),
 					'created'
 				);
 			} else {
 				DB::alteration_message(
-					'Could not copy default mobile theme "blackcandymobile" into themes directory (permission denied).
-					Please manually copy the "blackcandymobile" directory from the mobile module into the themes directory.',
+					sprintf(
+						'Could not copy default mobile theme "%s" into themes directory (permission denied).
+						Please manually copy the "%s" directory from the mobile module into the themes directory.',
+						$theme,
+						$theme
+					),
 					'error'
 				);
 			}

@@ -25,6 +25,11 @@ to create your own mobile theme.
 If the themes folder can't be written to by the web server during dev/build, please
 manually copy "blackcandymobile" into your themes folder from the mobile folder.
 
+Alternatively, the module contains a "jquerymobile" sample theme
+which creates a basic navigation interface through [jQuery Mobile](http://jquerymobile.com).
+To use this theme, copy it to `/themes` in the same way,
+and set it in your `SiteConfig` as described below.
+
 ## Configuring the mobile module
 
 In the CMS, browse to the "Pages" tab and click the root node of the site tree to
