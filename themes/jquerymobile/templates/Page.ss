@@ -16,7 +16,7 @@
 				data-icon="home" data-iconpos="notext">
 				Home
 			</a>
-			<h1>$SiteConfig.Title &raquo; $Title</h1>
+			<h1>$SiteConfig.Title</h1>
 			<%-- See Navigation_manypages.ss for handling more than half a dozen toplevel pages --%>
 			<% include Navigation %>
 		</div>
