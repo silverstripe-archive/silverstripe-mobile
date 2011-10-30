@@ -4,6 +4,7 @@
 	<% base_tag %>
 	<title>$Title</title>
 	$MetaTags(false)
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<%-- Caution: Any Requirements calls in init() methods of custom page types won't work due to jQuery Mobile loading pages via Ajax, place them all in Page_Controller --%>
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0rc1/jquery.mobile-1.0rc1.min.css" />
 	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
