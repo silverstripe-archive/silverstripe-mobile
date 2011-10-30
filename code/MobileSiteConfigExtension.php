@@ -161,10 +161,8 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 			'Root.Mobile',
 			array(
 				new OptionsetField('MobileSiteType', _t('MobileSiteConfig.MOBILESITEBEHAVIOUR', 'Mobile site behaviour'), $this->getMobileSiteTypes()),
-				new TextField('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain')),
-				new LiteralField('MobileDomainHelpText', '<label class="helpText">' . _t('MobileSiteConfig.MOBILEDOMAINHELP', '(e.g. "mobile.mysite.com"). Please make sure you point the given domain to this site') . '</label>'),
-				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain')),
-				new LiteralField('FullSiteDomainHelpText', '<label class="helpText">' . _t('MobileSiteConfig.FULLSITEDOMAINHELP', '(e.g. "mysite.com"). This usually doesn\'t need to be changed') . '</label>'),
+				new TextField('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain <small>(e.g. m.mysite.com, needs to be different from "Full site domain")</small>')),
+				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain <small>(e.g. mysite.com, usually doesn\'t need to be changed)</small>')),
 				new DropdownField('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
 			)
 		);
