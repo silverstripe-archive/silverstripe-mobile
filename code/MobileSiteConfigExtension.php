@@ -22,7 +22,7 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 
 	public static function get_theme_copy_path() {
 		if(!self::$theme_copy_path) {
-			return '../' . THEMES_DIR . '/blackcandymobile';
+			return BASE_PATH . '/' . THEMES_DIR . '/blackcandymobile';
 		} else {
 			return self::$theme_copy_path;
 		}
@@ -128,7 +128,7 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	 */
 	public static function copyDefaultTheme($theme = null) {
 		if(!$theme) $theme = 'blackcandymobile';
-		$src = '../' . MOBILE_DIR . '/themes/' . $theme;
+		$src = BASE_PATH . '/' . MOBILE_DIR . '/themes/' . $theme;
 		$dst = self::get_theme_copy_path();
 
 		if(!file_exists($dst)) {
