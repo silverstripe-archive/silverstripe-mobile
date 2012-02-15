@@ -156,7 +156,7 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	/**
 	 * Append extra fields to the new Mobile tab in the cms.
 	 */
-	public function updateCMSFields(FieldSet $fields) {
+	public function updateCMSFields($fields) {
 		$fields->addFieldsToTab(
 			'Root.Mobile',
 			array(
