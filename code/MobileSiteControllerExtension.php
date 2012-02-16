@@ -38,12 +38,20 @@ class MobileSiteControllerExtension extends Extension {
 		if(is_numeric($fullSite)) {
 			Cookie::set('fullSite', (int)$fullSite);
 
-			//use the host of the desktop version of the site to set cross-(sub)domain cookie
+			// use the host of the desktop version of the site to set cross-(sub)domain cookie
 			if (!empty($config->FullSiteDomain)) {
-				$parsedURL = parse_url($config->FullSiteDomain); 
-				setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time,null,'.'.$parsedURL['host']);
-			} else {	//otherwise just use a normal cookie with the default domain
-				setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time);
+				$parsedURL = parse_url($config->FullSiteDomain);
+				if(!headers_sent($file, $line)) {
+					setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time, null, '.' . $parsedURL['host']);
+				} else {
+					user_error(sprintf('Cookie \'fullSite\' can\'t be set. Output started at line %s in %s', $line, $file));
+				}
+			} else { // otherwise just use a normal cookie with the default domain
+				if(!headers_sent($file, $line)) {
+					setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time);
+				} else {
+					user_error(sprintf('Cookie \'fullSite\' can\'t be set. Output started at line %s in %s', $line, $file));
+				}
 			}
 		}
 
