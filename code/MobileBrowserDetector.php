@@ -29,7 +29,7 @@ class MobileBrowserDetector {
 		return (preg_match('/(ipad)/i', $_SERVER['HTTP_USER_AGENT'])) ? true : false;
 	}
 
-	
+
 	public static function is_opera_mini() {
 		return (stripos($_SERVER['HTTP_USER_AGENT'], 'opera mini') !== false) ? true : false;
 	}
@@ -58,6 +58,10 @@ class MobileBrowserDetector {
 		$accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
 
 		switch(true) {
+			case(self::is_ipad()):
+				$isMobile = true;
+				
+				break;
 			case(self::is_iphone()):
 				$isMobile = true;
 				break;
