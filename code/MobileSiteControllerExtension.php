@@ -90,6 +90,13 @@ class MobileSiteControllerExtension extends Extension {
 			self::$is_mobile = true;
 		}
 
+		//I added 14/1/2011 to detect ipad and send to theme
+		
+		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
+			if(MobileBrowserDetector::is_ipad())		
+				SSViewer::set_theme($config->Ipadtheme);
+		}
+
 		// If on a mobile device, but not on the mobile domain and has been setup for redirection
 		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
 			return $this->owner->redirect($config->MobileDomain, 301);

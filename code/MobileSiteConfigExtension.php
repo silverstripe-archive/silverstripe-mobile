@@ -37,12 +37,16 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				'MobileDomain' => 'Varchar(50)',
 				'FullSiteDomain' => 'Varchar(50)',
 				'MobileTheme' => 'Varchar(255)',
+				//added 14/1/2011
+				'Ipadtheme' => 'Varchar(255)',
 				'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")',
 			),
 			'defaults' => array(
 				'MobileDomain' => 'http://m.' . $_SERVER['HTTP_HOST'],
 				'FullSiteDomain' => 'http://' . $_SERVER['HTTP_HOST'],
 				'MobileTheme' => 'blackcandymobile',
+				//added 14/1/2011
+				'Ipadtheme' => 'testipad',
 				'MobileSiteType' => 'Disabled'
 			)
 		);
@@ -164,6 +168,9 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				new TextField('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain <small>(e.g. m.mysite.com, needs to be different from "Full site domain")</small>')),
 				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain <small>(e.g. mysite.com, usually doesn\'t need to be changed)</small>')),
 				new DropdownField('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
+				/* lee added this 14/1/2011 to add ipad drop down field   */
+				new DropdownField('Ipadtheme', _t('MobileSiteConfig.IPADTHEME', 'ipad theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
+
 			)
 		);
 	}
