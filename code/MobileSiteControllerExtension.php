@@ -90,7 +90,6 @@ class MobileSiteControllerExtension extends Extension {
 			self::$is_mobile = true;
 		}
 
-		//I added 14/1/2011 to detect ipad and send to theme
 		
 		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
 			if(MobileBrowserDetector::is_ipad())		

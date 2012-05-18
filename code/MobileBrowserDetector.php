@@ -23,7 +23,6 @@ class MobileBrowserDetector {
 		return (preg_match('/(ipod|iphone)/i', $_SERVER['HTTP_USER_AGENT'])) ? true : false;
 	}
 
-	// i added 14/1/2011
 	
 	public static function is_ipad() {
 		return (preg_match('/(ipad)/i', $_SERVER['HTTP_USER_AGENT'])) ? true : false;
