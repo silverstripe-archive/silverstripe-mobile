@@ -5,7 +5,7 @@
  *
  * @package mobile
  */
-class MobileSiteConfigExtension extends DataObjectDecorator {
+class MobileSiteConfigExtension extends DataExtension {
 
 	/**
 	 * The path the default mobile theme should be copied
@@ -29,24 +29,31 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	}
 
 	/**
-	 * Append Extra Fields onto the {@link SiteConfig}
+	 * Extra statics variable to merge into {@link SiteConfig}
 	 */
-	public function extraStatics() {
-		return array(
-			'db' => array(
-				'MobileDomain' => 'Varchar(50)',
-				'FullSiteDomain' => 'Varchar(50)',
-				'MobileTheme' => 'Varchar(255)',
-				'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")',
-			),
-			'defaults' => array(
+	static $db = array(
+		'MobileDomain' => 'Varchar(50)',
+		'FullSiteDomain' => 'Varchar(50)',
+		'MobileTheme' => 'Varchar(255)',
+		'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")'
+	);
+
+
+	static $defaults = array(
+		'MobileTheme' => 'blackcandymobile',
+		'MobileSiteType' => 'Disabled'
+	);
+
+	static function add_to_class($class, $extensionClass, $args = null) {
+		if($class == 'SiteConfig') {
+			Config::inst()->update($class, 'defaults', array(
 				'MobileDomain' => 'http://m.' . $_SERVER['HTTP_HOST'],
-				'FullSiteDomain' => 'http://' . $_SERVER['HTTP_HOST'],
-				'MobileTheme' => 'blackcandymobile',
-				'MobileSiteType' => 'Disabled'
-			)
-		);
+				'FullSiteDomain' => 'http://' . $_SERVER['HTTP_HOST']
+			));
+		}
+		parent::add_to_class($class, $extensionClass, $args);
 	}
+
 
 	/**
 	 * Check whether the protocol was specified for the mobile domain,
@@ -156,7 +163,7 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	/**
 	 * Append extra fields to the new Mobile tab in the cms.
 	 */
-	public function updateCMSFields($fields) {
+	public function updateCMSFields(FieldList $fields) {
 		$fields->addFieldsToTab(
 			'Root.Mobile',
 			array(
