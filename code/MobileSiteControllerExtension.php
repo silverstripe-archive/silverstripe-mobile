@@ -29,7 +29,7 @@ class MobileSiteControllerExtension extends Extension {
 		$request = $this->owner->getRequest();
 		
 		// If we've accessed the homepage as /home/, then we redirect to / and don't want to double redirect here
-		if (Director::redirected_to()) {
+		if ($this->owner->redirectedTo()) {
 			return;
 		}
 
