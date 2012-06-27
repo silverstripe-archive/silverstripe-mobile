@@ -39,6 +39,10 @@ class MobileBrowserDetector {
 		return (preg_match('/(windows ce; ppc;|windows ce; smartphone;|windows ce; iemobile)/i', $_SERVER['HTTP_USER_AGENT'])) ? true : false;
 	}
 
+	public static function is_win_phone() {
+		return (stripos($_SERVER['HTTP_USER_AGENT'], 'Windows Phone OS') !== false) ? true : false;
+	}
+
 	/**
 	 * Is the current HTTP_USER_AGENT a known mobile device string?
 	 * @see http://mobiforge.com/developing/story/setting-http-headers-advise-transcoding-proxies
@@ -64,6 +68,9 @@ class MobileBrowserDetector {
 				$isMobile = true;
 				break;
 			case(self::is_palm()):
+				$isMobile = true;
+				break;
+			case(self::is_win_phone()):
 				$isMobile = true;
 				break;
 			case(self::is_windows()):
