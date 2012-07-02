@@ -40,8 +40,8 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 				'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")',
 			),
 			'defaults' => array(
-				'MobileDomain' => 'http://m.' . $_SERVER['HTTP_HOST'],
-				'FullSiteDomain' => 'http://' . $_SERVER['HTTP_HOST'],
+				'MobileDomain' => 'http://m.' . @$_SERVER['HTTP_HOST'],
+				'FullSiteDomain' => 'http://' . @$_SERVER['HTTP_HOST'],
 				'MobileTheme' => 'blackcandymobile',
 				'MobileSiteType' => 'Disabled'
 			)
