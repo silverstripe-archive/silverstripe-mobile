@@ -5,7 +5,7 @@
 The mobile module provides detection for mobile devices,
 and can serve a different SilverStripe theme to them.
 The module can either use redirection to a separate mobile
-domain, or serve mobile optimized content under the same URLs.
+domain, or serve mobile optimised content under the same URLs.
 It includes a default "blackcandymobile" theme to demonstrate the effects.
 
 Note: The W3C recommends a ["One web" approach](http://www.w3.org/TR/mobile-bp/#d0e347) 
@@ -36,7 +36,7 @@ Unpack and copy the mobile folder into your SilverStripe project.
 Run "dev/build" in your browser, for example: "http://localhost/silverstripe/dev/build?flush=all"
 
 A new theme called "blackcandymobile" will be created in your themes folder after
-invoking the database build. This theme is a good starting point which you can modify
+invoking the database (dev) build. This theme is a good starting point which you can modify
 to create your own mobile theme.
 
 If the themes folder can't be written to by the web server during dev/build, please
@@ -49,9 +49,12 @@ and set it in your `SiteConfig` as described below.
 
 ## Configuration
 
-In the CMS, browse to the "Pages" tab and click the root node of the site tree to
-access the SiteConfig settings. Once opened, there's a "Mobile" tab which exposes
-the configuration options of the mobile module.
+* SS2.4: In the CMS, browse to the "Pages" tab and click the root node of the site tree to
+access the SiteConfig settings. 
+* SS3: In the CMS, browse to the "Settings" tab on the left navigation bar to access the 
+SiteConfig settings. 
+
+Once opened, there's a "Mobile" tab which exposes the configuration options of the mobile module.
 
 These options are quite simple. One set of radio buttons controls the behaviour
 of the mobile site, and there's text input fields to enter which domain you want
