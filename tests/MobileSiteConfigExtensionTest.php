@@ -28,13 +28,13 @@ class MobileSiteConfigExtensionTest extends SapphireTest {
 	public function testMobileDomainGetterAddsProtocolPrefix() {
 		$config = SiteConfig::current_site_config();
 		$config->MobileDomain = 'mobile.mysite.com';
-		$this->assertEquals('http://mobile.mysite.com', $config->MobileDomain);
+		$this->assertEquals('http://mobile.mysite.com', $config->MobileDomainNormalized);
 	}
 
 	public function testFullSiteDomainGetterAddsProtocolPrefix() {
 		$config = SiteConfig::current_site_config();
 		$config->FullSiteDomain = 'mysite.com';
-		$this->assertEquals('http://mysite.com', $config->FullSiteDomain);
+		$this->assertEquals('http://mysite.com', $config->FullSiteDomainNormalized);
 	}
 
 	public function tearDown() {

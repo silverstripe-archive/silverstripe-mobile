@@ -34,24 +34,24 @@ class MobileSiteControllerExtension extends Extension {
 		}
 
 		// Enforce the site (cookie expires in 30 minutes)
-		$fullSite = $request->getVar('fullSite');
-		if(is_numeric($fullSite)) {
-			Cookie::set('fullSite', (int)$fullSite);
+		if($request->getVar('fullSite') !== null) {
+			$fullSite = (int)$request->getVar('fullSite');
+			$_COOKIE['fullSite'] = $fullSite;
 
-			// use the host of the desktop version of the site to set cross-(sub)domain cookie
-			if (!empty($config->FullSiteDomain)) {
-				$parsedURL = parse_url($config->FullSiteDomain);
-				if(!headers_sent($file, $line)) {
-					Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time, null, '.' . $parsedURL['host']);
-				} else {
-					user_error(sprintf('Cookie \'fullSite\' can\'t be set. Output started at line %s in %s', $line, $file));
-				}
-			} else { // otherwise just use a normal cookie with the default domain
-				if(!headers_sent($file, $line)) {
-					Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time);
-				} else {
-					user_error(sprintf('Cookie \'fullSite\' can\'t be set. Output started at line %s in %s', $line, $file));
-				}
+			// Use the host of the desktop version of the site to set cross-domain cookie.
+			// Assumes that the mobile site is a subdomain of this one.
+			$domain = $config->FullSiteDomainNormalized;
+			if($domain) {
+				$parsedURL = parse_url($domain); 
+				Cookie::set(
+					'fullSite', 
+					$fullSite, 
+					(self::$cookie_expire_time/86400),
+					null,
+					'.'.parse_url($domain, PHP_URL_HOST)
+				);
+			} else {	//otherwise just use a normal cookie with the default domain
+				Cookie::set('fullSite', $fullSite, (self::$cookie_expire_time/86400));
 			}
 		}
 
@@ -61,7 +61,7 @@ class MobileSiteControllerExtension extends Extension {
 			// Full site requested
 			if($fullSiteCookie) {
 				if($this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
-					return $this->owner->redirect($config->FullSiteDomain, 301);
+					return $this->owner->redirect($config->FullSiteDomainNormalized);
 				}
 
 				return;
@@ -69,7 +69,7 @@ class MobileSiteControllerExtension extends Extension {
 			// Mobile site requested
 			else {
 				if(!$this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
-					return $this->owner->redirect($config->MobileDomain, 301);
+					return $this->owner->redirect($config->MobileDomainNormalized);
 				}
 
 				SSViewer::set_theme($config->MobileTheme);
@@ -92,7 +92,7 @@ class MobileSiteControllerExtension extends Extension {
 
 		// If on a mobile device, but not on the mobile domain and has been setup for redirection
 		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
-			return $this->owner->redirect($config->MobileDomain, 301);
+			return $this->owner->redirect($config->MobileDomainNormalized);
 		}
 	}
 
@@ -107,21 +107,21 @@ class MobileSiteControllerExtension extends Extension {
 	}
 
 	/**
-	 * Return whether the user is on the mobile version of the website.
-	 * Caution: This only has an effect when "MobileSiteType" is configured as "RedirectToDomain".
-	 * 
+	 * Return whether the user is on the mobile version of the website
 	 * @return boolean
 	 */
 	public function onMobileDomain() {
 		$config = SiteConfig::current_site_config();
-		$parts = parse_url($config->MobileDomain);
-		$compare = @$parts['host'];
-		if(@$parts['port']) $compare .= ':' . $parts['port'];
-		if($compare && $compare == $_SERVER['HTTP_HOST']) {
-			return true;
-		} else {
-			return false;
+		$domains = explode(',', $config->MobileDomain);
+		foreach($domains as $domain) {
+			if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain; // Normalize URL
+			$parts = parse_url($domain);
+			$compare = @$parts['host'];
+			if(@$parts['port']) $compare .= ':' . $parts['port'];
+			if($compare && $compare == $_SERVER['HTTP_HOST']) return true;
 		}
+		
+		return false;
 	}
 	
 	/**

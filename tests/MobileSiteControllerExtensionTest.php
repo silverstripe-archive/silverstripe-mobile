@@ -121,7 +121,7 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$response = $this->get($page->URLSegment . '?fullSite=1', null, null, array('fullSite' => 1));
 		$headers = $response->getHeaders();
 		$this->assertEquals(302, $response->getStatusCode());
-		$this->assertEquals($config->FullSiteDomain, $headers['Location']);
+		$this->assertEquals($config->FullSiteDomainNormalized, $headers['Location']);
 	}
 
 	public function testRedirectToMobileSiteFromDesktop() {
@@ -132,7 +132,7 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$response = $this->get($page->URLSegment . '?fullSite=0', null, null, array('fullSite' => 0));
 		$headers = $response->getHeaders();
 		$this->assertEquals(302, $response->getStatusCode());
-		$this->assertEquals($config->MobileDomain, $headers['Location']);
+		$this->assertEquals($config->MobileDomainNormalized, $headers['Location']);
 	}
 
 	public function testNoMobileRedirectWhenFullSiteSessionSetOnMobile() {
@@ -151,6 +151,20 @@ class MobileSiteControllerExtensionTest extends FunctionalTest {
 		$controller = new ContentController();
 		$this->assertFalse($controller->onMobileDomain());
 		$_SERVER['HTTP_HOST'] = 'm.' . $_SERVER['HTTP_HOST'];
+		$this->assertTrue($controller->onMobileDomain());
+	}
+
+	public function testOnMobileSiteMultipleDomains() {
+		$config = SiteConfig::current_site_config();
+		$config->FullSiteDomain = 'domain1.com,domain2.com';
+		$config->MobileDomain = 'm.domain1.com,m.domain2.com';
+		$config->write();
+		$_SERVER['HTTP_HOST'] = 'domain1.com';
+		$controller = new ContentController();
+		$this->assertFalse($controller->onMobileDomain());
+		$_SERVER['HTTP_HOST'] = 'm.domain1.com';
+		$this->assertTrue($controller->onMobileDomain());
+		$_SERVER['HTTP_HOST'] = 'm.domain2.com';
 		$this->assertTrue($controller->onMobileDomain());
 	}
 
