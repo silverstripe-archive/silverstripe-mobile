@@ -34,8 +34,10 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	public function extraStatics() {
 		return array(
 			'db' => array(
-				'MobileDomain' => 'Varchar(50)',
-				'FullSiteDomain' => 'Varchar(50)',
+				// Comma-separated list of mobile domains, without protocol
+				'MobileDomain' => 'Text',
+				// Comma-separated list of non-mobile domains, without protocol
+				'FullSiteDomain' => 'Text',
 				'MobileTheme' => 'Varchar(255)',
 				'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")',
 			),
@@ -47,43 +49,28 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 			)
 		);
 	}
+	
 
 	/**
-	 * Check whether the protocol was specified for the mobile domain,
-	 * and if it wasn't, then assume http. e.g. "mysite.com" => "http://mysite.com"
-	 * 
-	 * @return string
+	 * @return String The first available domain, with the current protocol prefixed,
+	 * suitable for redirections etc.
 	 */
-	public function getMobileDomain() {
-		$defaults = $this->owner->stat('defaults');
-
-		$value = $this->owner->getField('MobileDomain');
-		if(!$value) $value = $defaults['MobileDomain'];
-
-		if(strpos($value, '://') === false) {
-			return 'http://' . $value;
-		} else {
-			return $value;
-		}
+	public function getMobileDomainNormalized() {
+		$domains = explode(',', $this->owner->MobileDomain);
+		$domain = array_shift($domains);
+		if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain;
+		return $domain;
 	}
 
 	/**
-	 * Check whether the protocol was specified for the full site domain,
-	 * and if it wasn't, then assume http. e.g. "mysite.com" => "http://mysite.com"
-	 * 
-	 * @return string
+	 * @return String The first available domain, with the current protocol prefixed,
+	 * suitable for redirections etc.
 	 */
-	public function getFullSiteDomain() {
-		$defaults = $this->owner->stat('defaults');
-
-		$value = $this->owner->getField('FullSiteDomain');
-		if(!$value) $value = $defaults['FullSiteDomain'];
-
-		if(strpos($value, '://') === false) {
-			return 'http://' . $value;
-		} else {
-			return $value;
-		}
+	public function getFullSiteDomainNormalized() {
+		$domains = explode(',', $this->owner->FullSiteDomain);
+		$domain = array_shift($domains);
+		if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain;
+		return $domain;
 	}
 
 	/**
