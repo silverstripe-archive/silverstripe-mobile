@@ -35,20 +35,24 @@ class MobileSiteControllerExtension extends Extension {
 
 		// Enforce the site (cookie expires in 30 minutes)
 		$fullSite = $request->getVar('fullSite');
+
 		if(is_numeric($fullSite)) {
-			Cookie::set('fullSite', (int)$fullSite);
+			$fullSiteCookie = (int)$fullSite;
+			Cookie::set('fullSite', $fullSiteCookie);
 
 			// use the host of the desktop version of the site to set cross-(sub)domain cookie
 			$domain = $config->FullSiteDomainNormalized;
+
 			if (!empty($domain)) {
 				Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time, null, '.' . parse_url($domain, PHP_URL_HOST));
 			} else { // otherwise just use a normal cookie with the default domain
 				Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time);
 			}
 		}
-
-		// Site is being forced via flag or cookie
-		$fullSiteCookie = Cookie::get('fullSite');
+		else {
+			$fullSiteCookie = Cookie::get('fullSite');
+		}
+		
 		if(is_numeric($fullSiteCookie)) {
 			// Full site requested
 			if($fullSiteCookie) {
