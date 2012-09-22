@@ -1,0 +1,25 @@
+{
+	"name": "silverstripe/mobile",
+	"description": "The mobile module provides detection for mobile devices,
+	and can serve a different SilverStripe theme to them.
+	The module can either use redirection to a separate mobile
+	domain, or serve mobile optimised content under the same URLs.
+	It includes a default blackcandymobile theme to demonstrate the effects.",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "mobile"],
+	"authors": [
+	{
+		"name": "Sean Harvey",
+		"email": "sean@silverstripe.com"
+	},
+	{
+		"name": "Will Rossiter",
+		"email": "will@silverstripe.com"
+	}
+	],
+
+	"require":
+	{
+		"silverstripe/framework": ">=2.4.1"
+	}
+}
