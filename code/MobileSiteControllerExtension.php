@@ -24,71 +24,79 @@ class MobileSiteControllerExtension extends Extension {
 	 * or if they are on the configured mobile domain then they receive the mobile site.
 	 */
 	public function onAfterInit() {
-		self::$is_mobile = false;
-		$config = SiteConfig::current_site_config();
-		$request = $this->owner->getRequest();
-		
-		// If we've accessed the homepage as /home/, then we redirect to / and don't want to double redirect here
-		if ($this->owner->redirectedTo()) {
+
+		if (Director::redirected_to()) {
 			return;
 		}
 
-		// Enforce the site (cookie expires in 30 minutes)
+		self::$is_mobile = false;
+    		$config = SiteConfig::current_site_config(); 
+    		$request = $this->owner->getRequest();
+
+    		$this->set_fullsite_cookie($request); 
+    		$state = $this->siteState($config->MobileSiteType, $this->isFullSite($request)); 
+
+		switch ($state) {
+	    		case 1:
+				$this->switchToTheMobiletheme($config->MobileTheme); 
+		      		break;
+		    	case 2: 
+				return $this->owner->redirect($config->MobileDomain, 302);
+		      		break;
+		}
+	}
+
+	public function switchToTheMobiletheme($theme) {
+  	  	SSViewer::set_theme($theme);
+    		self::$is_mobile = true;
+	}
+
+	/**
+	 * What to do next?
+	 */
+	public function siteState($MobileSiteType, $fullSite) {
+		$config = SiteConfig::current_site_config(); 
+		if($this->onMobileDomain())
+	      		return 1;
+		if($fullSite)
+ 			return 0;
+	    	if(MobileBrowserDetector::is_mobile() && $MobileSiteType == 'RedirectToDomain')    
+			return 2; 
+	    	if(MobileBrowserDetector::is_mobile())
+	    		return 1;
+	    	return 0; 
+	}
+	
+	/**
+	 * Update the fullSite cookie for 30 minutes
+	 */
+	public function isFullSite($request) {
+		$fsVal = (is_numeric($request->getVar('fullSite')))?  $request->getVar('fullSite'):Cookie::get('fullSite');
+    		return is_numeric($fsVal) && $fsVal; 
+	}
+
+	/**
+	 * Update the fullSite cookie for 30 minutes
+	 */
+	static public function set_fullsite_cookie($request) {
 		$fullSite = $request->getVar('fullSite');
-
 		if(is_numeric($fullSite)) {
-			$fullSiteCookie = (int)$fullSite;
-			Cookie::set('fullSite', $fullSiteCookie);
-
+			Cookie::set('fullSite', (int)$fullSite);
 			// use the host of the desktop version of the site to set cross-(sub)domain cookie
-			$domain = $config->FullSiteDomainNormalized;
-
-			if (!empty($domain)) {
-				Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time, null, '.' . parse_url($domain, PHP_URL_HOST));
+			if (!empty($config->FullSiteDomain)) {
+				$parsedURL = parse_url($config->FullSiteDomain);
+				if(!headers_sent($file, $line)) {
+					setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time, null, '.' . $parsedURL['host']);
+				} else {
+					user_error(sprintf('Cookie \'fullSite\' can\'t be set. Output started at line %s in %s', $line, $file));
+				}
 			} else { // otherwise just use a normal cookie with the default domain
-				Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time);
-			}
-		}
-		else {
-			$fullSiteCookie = Cookie::get('fullSite');
-		}
-		
-		if(is_numeric($fullSiteCookie)) {
-			// Full site requested
-			if($fullSiteCookie) {
-				if($this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
-					return $this->owner->redirect($config->FullSiteDomainNormalized, 301);
+				if(!headers_sent($file, $line)) {
+					setcookie('fullSite', $fullSite, time() + self::$cookie_expire_time);
+				} else {
+					user_error(sprintf('Cookie \'fullSite\' can\'t be set. Output started at line %s in %s', $line, $file));
 				}
-
-				return;
 			}
-			// Mobile site requested
-			else {
-				if(!$this->onMobileDomain() && $config->MobileSiteType == 'RedirectToDomain') {
-					return $this->owner->redirect($config->MobileDomainNormalized, 301);
-				}
-
-				SSViewer::set_theme($config->MobileTheme);
-				self::$is_mobile = true;
-				return;
-			}
-		}
-
-		// If the user requested the mobile domain, set the right theme
-		if($this->onMobileDomain()) {
-			SSViewer::set_theme($config->MobileTheme);
-			self::$is_mobile = true;
-		}
-
-		// User just wants to see a theme, but no redirect occurs
-		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
-			SSViewer::set_theme($config->MobileTheme);
-			self::$is_mobile = true;
-		}
-
-		// If on a mobile device, but not on the mobile domain and has been setup for redirection
-		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
-			return $this->owner->redirect($config->MobileDomainNormalized, 301);
 		}
 	}
 
