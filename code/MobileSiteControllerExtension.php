@@ -41,7 +41,7 @@ class MobileSiteControllerExtension extends Extension {
 				$this->switchToTheMobiletheme($config->MobileTheme); 
 		      		break;
 		    	case 2: 
-				return $this->owner->redirect($config->MobileDomain, 301);
+				return $this->owner->redirect($config->MobileDomain, 302);
 		      		break;
 		}
 	}
