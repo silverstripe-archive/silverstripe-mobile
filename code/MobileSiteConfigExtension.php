@@ -15,6 +15,8 @@ class MobileSiteConfigExtension extends DataExtension {
 	 * @var string
 	 */
 	protected static $theme_copy_path;
+	
+	public static $theme_copy_enabled = true;
 
 	public static function set_theme_copy_path($path) {
 		self::$theme_copy_path = $path;
@@ -120,6 +122,7 @@ class MobileSiteConfigExtension extends DataExtension {
 	 * @param String
 	 */
 	public static function copyDefaultTheme($theme = null) {
+		if(!self::$theme_copy_enabled) return;
 		if(!$theme) $theme = 'blackcandymobile';
 		$src = '../' . MOBILE_DIR . '/themes/' . $theme;
 		$dst = self::get_theme_copy_path();
