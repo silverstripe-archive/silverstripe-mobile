@@ -34,56 +34,20 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	public function extraStatics() {
 		return array(
 			'db' => array(
-				'MobileDomain' => 'Varchar(50)',
-				'FullSiteDomain' => 'Varchar(50)',
+				// Comma-separated list of mobile domains, without protocol
+				'MobileDomain' => 'Text',
+				// Comma-separated list of non-mobile domains, without protocol
+				'FullSiteDomain' => 'Text',
 				'MobileTheme' => 'Varchar(255)',
-				'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")',
+				'MobileSiteType' => 'Varchar(255)'
 			),
 			'defaults' => array(
-				'MobileDomain' => 'http://m.' . @$_SERVER['HTTP_HOST'],
-				'FullSiteDomain' => 'http://' . @$_SERVER['HTTP_HOST'],
+				'MobileDomain' => 'm.' . @$_SERVER['HTTP_HOST'],
+				'FullSiteDomain' => @$_SERVER['HTTP_HOST'],
 				'MobileTheme' => 'blackcandymobile',
 				'MobileSiteType' => 'Disabled'
 			)
 		);
-	}
-
-	/**
-	 * Check whether the protocol was specified for the mobile domain,
-	 * and if it wasn't, then assume http. e.g. "mysite.com" => "http://mysite.com"
-	 * 
-	 * @return string
-	 */
-	public function getMobileDomain() {
-		$defaults = $this->owner->stat('defaults');
-
-		$value = $this->owner->getField('MobileDomain');
-		if(!$value) $value = $defaults['MobileDomain'];
-
-		if(strpos($value, '://') === false) {
-			return 'http://' . $value;
-		} else {
-			return $value;
-		}
-	}
-
-	/**
-	 * Check whether the protocol was specified for the full site domain,
-	 * and if it wasn't, then assume http. e.g. "mysite.com" => "http://mysite.com"
-	 * 
-	 * @return string
-	 */
-	public function getFullSiteDomain() {
-		$defaults = $this->owner->stat('defaults');
-
-		$value = $this->owner->getField('FullSiteDomain');
-		if(!$value) $value = $defaults['FullSiteDomain'];
-
-		if(strpos($value, '://') === false) {
-			return 'http://' . $value;
-		} else {
-			return $value;
-		}
 	}
 
 	/**
@@ -95,6 +59,26 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 		$value = $this->owner->getField('MobileSiteType');
 		if(!$value) $value = $defaults['MobileSiteType'];
 		return $value;
+	}
+
+	/**
+	 * @return String The first available domain, with the current protocol prefixed,
+	 * suitable for redirections etc.
+	 */
+	public function getMobileDomainNormalized() {
+		$domain = array_shift(explode(',', $this->owner->MobileDomain));
+		if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain;
+		return $domain;
+	}
+
+	/**
+	 * @return String The first available domain, with the current protocol prefixed,
+	 * suitable for redirections etc.
+	 */
+	public function getFullSiteDomainNormalized() {
+		$domain = array_shift(explode(',', $this->owner->FullSiteDomain));
+		if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain;
+		return $domain;
 	}
 
 	/**
@@ -156,13 +140,15 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 	/**
 	 * Append extra fields to the new Mobile tab in the cms.
 	 */
-	public function updateCMSFields($fields) {
+	public function updateCMSFields(FieldSet $fields) {
 		$fields->addFieldsToTab(
 			'Root.Mobile',
 			array(
 				new OptionsetField('MobileSiteType', _t('MobileSiteConfig.MOBILESITEBEHAVIOUR', 'Mobile site behaviour'), $this->getMobileSiteTypes()),
-				new TextField('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain <small>(e.g. m.mysite.com, needs to be different from "Full site domain")</small>')),
-				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain <small>(e.g. mysite.com, usually doesn\'t need to be changed)</small>')),
+				new TextField('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain')),
+				new LiteralField('MobileDomainHelpText', '<label class="helpText">' . _t('MobileSiteConfig.MOBILEDOMAINHELP', 'E.g. "mobile.mysite.com". Separate multiple domains by comma.') . '</label>'),
+				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain')),
+				new LiteralField('FullSiteDomainHelpText', '<label class="helpText">' . _t('MobileSiteConfig.FULLSITEDOMAINHELP', 'E.g. "mysite.com". Separate multiple domains by comma. This usually doesn\'t need to be changed') . '</label>'),
 				new DropdownField('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
 			)
 		);
