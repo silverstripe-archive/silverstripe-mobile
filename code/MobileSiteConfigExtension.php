@@ -121,7 +121,11 @@ class MobileSiteConfigExtension extends DataExtension {
 	 */
 	public static function copyDefaultTheme($theme = null) {
 		if(!$theme) $theme = 'blackcandymobile';
-		$src = '../' . MOBILE_DIR . '/themes/' . $theme;
+		$src = BASE_PATH . '/' . MOBILE_DIR . '/themes/' . $theme;
+		if(!file_exists($src)) {
+			throw new InvalidArgumentException(sprintf('Theme "%s" not found in path %s', $theme, $src));
+		}
+
 		$dst = self::get_theme_copy_path();
 
 		if(!file_exists($dst)) {
