@@ -64,6 +64,7 @@ class MobileSiteConfigExtension extends DataExtension {
 	public function getMobileDomainNormalized() {
 		$domains = explode(',', $this->owner->MobileDomain);
 		$domain = array_shift($domains);
+		if(!$domain) return false;
 		if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain;
 		return $domain;
 	}
@@ -75,6 +76,7 @@ class MobileSiteConfigExtension extends DataExtension {
 	public function getFullSiteDomainNormalized() {
 		$domains = explode(',', $this->owner->FullSiteDomain);
 		$domain = array_shift($domains);
+		if(!$domain) return false;
 		if(!parse_url($domain, PHP_URL_SCHEME)) $domain = Director::protocol() . $domain;
 		return $domain;
 	}
