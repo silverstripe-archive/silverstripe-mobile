@@ -103,6 +103,27 @@ class MobileSiteControllerExtension extends Extension {
 	}
 
 	/**
+	 * Return whether the user is requesting the mobile site - either by query string
+	 * or by saved cookie. Falls back to browser detection for first time visitors
+	 *
+	 * @return boolean
+	 */
+	public function requestedMobileSite() {
+		$request = $this->owner->getRequest();
+		$fullSite = $request->getVar('fullSite');
+		if (is_numeric($fullSite)) {
+			return ($fullSite == 0);
+		}
+
+		$fullSiteCookie = Cookie::get('fullSite');
+		if (is_numeric($fullSiteCookie)) {
+			return ($fullSiteCookie == 0);
+		}
+		
+		return MobileBrowserDetector::is_mobile();
+	}
+
+	/**
 	 * Return whether the user is on the mobile version of the website.
 	 * Caution: This only has an effect when "MobileSiteType" is configured as "RedirectToDomain".
 	 * 
