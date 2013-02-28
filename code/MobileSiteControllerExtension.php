@@ -109,6 +109,9 @@ class MobileSiteControllerExtension extends Extension {
 	 * @return boolean
 	 */
 	public function requestedMobileSite() {
+		$config = SiteConfig::current_site_config();
+		if ($config->MobileSiteType == 'Disabled') return false;
+		
 		$request = $this->owner->getRequest();
 		$fullSite = $request->getVar('fullSite');
 		if (is_numeric($fullSite)) {
