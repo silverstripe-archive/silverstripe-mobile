@@ -42,10 +42,11 @@ class MobileSiteControllerExtension extends Extension {
 			// use the host of the desktop version of the site to set cross-(sub)domain cookie
 			$domain = $config->FullSiteDomainNormalized;
 
+			$expiryDays = (time() + self::$cookie_expire_time) / (60*60*24);
 			if (!empty($domain)) {
-				Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time, null, '.' . parse_url($domain, PHP_URL_HOST));
+				Cookie::set('fullSite', $fullSiteCookie, $expiryDays, null, '.' . parse_url($domain, PHP_URL_HOST));
 			} else { // otherwise just use a normal cookie with the default domain
-				Cookie::set('fullSite', $fullSite, time() + self::$cookie_expire_time);
+				Cookie::set('fullSite', $fullSiteCookie, $expiryDays);
 			}
 		}
 		else {
