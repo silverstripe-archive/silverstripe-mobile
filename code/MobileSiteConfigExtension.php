@@ -36,15 +36,15 @@ class MobileSiteConfigExtension extends DataExtension {
 		'MobileDomain' => 'Text',
 		// Comma-separated list of non-mobile domains, without protocol
 		'FullSiteDomain' => 'Text',
-		'MobileTheme' => 'Varchar(255)',
+				'MobileTheme' => 'Varchar(255)',
 		'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")'
 	);
 
 
 	static $defaults = array(
-		'MobileTheme' => 'blackcandymobile',
-		'MobileSiteType' => 'Disabled'
-	);
+				'MobileTheme' => 'blackcandymobile',
+				'MobileSiteType' => 'Disabled'
+		);
 
 	static function add_to_class($class, $extensionClass, $args = null) {
 		if($class == 'SiteConfig') {
@@ -52,10 +52,10 @@ class MobileSiteConfigExtension extends DataExtension {
 				'MobileDomain' => 'm.' . $_SERVER['HTTP_HOST'],
 				'FullSiteDomain' => $_SERVER['HTTP_HOST']
 			));
-		}
+	}
 		parent::add_to_class($class, $extensionClass, $args);
 	}
-
+	
 
 	/**
 	 * @return String The first available domain, with the current protocol prefixed,

@@ -8,11 +8,17 @@ The module can either use redirection to a separate mobile
 domain, or serve mobile optimised content under the same URLs.
 It includes a default "blackcandymobile" theme to demonstrate the effects.
 
-Note: The W3C recommends a ["One web" approach](http://www.w3.org/TR/mobile-bp/#d0e347) 
+The codebase relies on server-side device detection based on user agent strings,
+which is an [unreliable](http://www.brettjankord.com/2013/01/10/active-development-on-categorizr-has-come-to-an-end/) way to determine if a device is considered to be "mobile".
+
+The W3C recommends a ["One web" approach](http://www.w3.org/TR/mobile-bp/#d0e347) 
 that uses ["Responsive Design"](http://www.alistapart.com/articles/responsive-web-design/)
 to adapt content, rather than create isolated mobile experiences under their own domain.
 Most of the work on mobile optimization will be in client-side techniques
-like JavaScript and CSS (e.g. through media queries).
+like JavaScript and CSS (e.g. through media queries). 
+
+Responsive design is not covered by this module, and can be achieved with standard
+SilverStripe functionality.
 
 The module also exposes this state in SilverStripe controllers
 so custom logic and CSS/JavaScript includes can be adapted to mobile usage.
@@ -83,6 +89,5 @@ Google will detect this change by using a different user agent, and index accord
 
  * Search form in the default theme
  * Integrate with subsites module to serve different content for a mobile site
- * Integrate with third-party mobile detection, e.g. WURFL or Apache Mobile Filter or browscap (see http://nz.php.net/get_browser)
  * Device feature detection e.g. "Does this device support SSL?" or "Does this device support XHTML?" for progressive enhancement
  * Dynamic image insertion and resizing via HTML5 data attributes
