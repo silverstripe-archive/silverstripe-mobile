@@ -38,7 +38,6 @@ class MobileSiteControllerExtension extends Extension {
 
 		if(is_numeric($fullSite)) {
 			$fullSiteCookie = (int)$fullSite;
-			Cookie::set('fullSite', $fullSiteCookie);
 
 			// use the host of the desktop version of the site to set cross-(sub)domain cookie
 			$domain = $config->FullSiteDomainNormalized;
