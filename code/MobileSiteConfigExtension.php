@@ -8,27 +8,6 @@
 class MobileSiteConfigExtension extends DataObjectDecorator {
 
 	/**
-	 * The path the default mobile theme should be copied
-	 * to when {@link SiteConfig} is first created in the database.
-	 * 
-	 * @see MobileSiteConfigExtension::requireDefaultRecords()
-	 * @var string
-	 */
-	protected static $theme_copy_path;
-
-	public static function set_theme_copy_path($path) {
-		self::$theme_copy_path = $path;
-	}
-
-	public static function get_theme_copy_path() {
-		if(!self::$theme_copy_path) {
-			return '../' . THEMES_DIR . '/blackcandymobile';
-		} else {
-			return self::$theme_copy_path;
-		}
-	}
-
-	/**
 	 * Append Extra Fields onto the {@link SiteConfig}
 	 */
 	public function extraStatics() {
@@ -95,49 +74,6 @@ class MobileSiteConfigExtension extends DataObjectDecorator {
 		$types['RedirectToDomain'] = _t('MobileSiteConfig.REDIRECTDOMAIN', 'Mobile users are redirected to mobile domain');
 		$types['MobileThemeOnly'] = _t('MobileSiteConfig.USEANOTHERTHEME', 'Mobile users see mobile theme, but no redirection occurs');
 		return $types;
-	}
-
-	/**
-	 * The default theme is "blackcandymobile". If this is still set
-	 * as a field on SiteConfig, then make sure that it's copied
-	 * into the themes directory from the mobile module.
-	 */
-	public function augmentDatabase() {
-		$defaultThemes = array('blackcandymobile', 'jquerymobile');
-		$currentTheme = $this->owner->getField('MobileTheme');
-		if(!$currentTheme || in_array($currentTheme, $defaultThemes)) {
-			$this->copyDefaultTheme($currentTheme);
-		}
-	}
-
-	/**
-	 * @param String
-	 */
-	public static function copyDefaultTheme($theme = null) {
-		if(!$theme) $theme = 'blackcandymobile';
-		$src = '../' . MOBILE_DIR . '/themes/' . $theme;
-		$dst = self::get_theme_copy_path();
-
-		if(!file_exists($dst)) {
-			@mkdir($dst);
-			if(is_writable($dst)) {
-				rcopy($src, $dst);
-				DB::alteration_message(
-					sprintf('Default mobile theme "%s" has been copied into the themes directory', $theme),
-					'created'
-				);
-			} else {
-				DB::alteration_message(
-					sprintf(
-						'Could not copy default mobile theme "%s" into themes directory (permission denied).
-						Please manually copy the "%s" directory from the mobile module into the themes directory.',
-						$theme,
-						$theme
-					),
-					'error'
-				);
-			}
-		}
 	}
 
 	/**

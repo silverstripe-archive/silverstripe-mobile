@@ -6,7 +6,6 @@ The mobile module provides detection for mobile devices,
 and can serve a different SilverStripe theme to them.
 The module can either use redirection to a separate mobile
 domain, or serve mobile optimized content under the same URLs.
-It includes a default "blackcandymobile" theme to demonstrate the effects.
 
 The codebase relies on server-side device detection based on user agent strings,
 which is an [unreliable](http://www.brettjankord.com/2013/01/10/active-development-on-categorizr-has-come-to-an-end/) way to determine if a device is considered to be "mobile".
@@ -41,17 +40,22 @@ Unpack and copy the mobile folder into your SilverStripe project.
 
 Run "dev/build" in your browser, for example: "http://localhost/silverstripe/dev/build?flush=all"
 
-A new theme called "blackcandymobile" will be created in your themes folder after
-invoking the database build. This theme is a good starting point which you can modify
-to create your own mobile theme.
+## Themes
 
-If the themes folder can't be written to by the web server during dev/build, please
-manually copy "blackcandymobile" into your themes folder from the mobile folder.
+We provide two themes as a starting point which you can modify to create your own mobile theme:
 
-Alternatively, the module contains a "jquerymobile" sample theme
-which creates a basic navigation interface through [jQuery Mobile](http://jquerymobile.com).
-To use this theme, copy it to `/themes` in the same way,
-and set it in your `SiteConfig` as described below.
+ * ["blackcandymobile"](https://github.com/silverstripe-themes/silverstripe-blackcandymobile):
+   Modelled to work with the "blackcandy" theme which comes with the SilverStripe 2.x default installation.
+ * ["jquerymobile"](https://github.com/silverstripe-themes/silverstripe-jquerymobile):
+   Creates a basic navigation interface through [jQuery Mobile](http://jquerymobile.com)
+
+Either download the themes from github, or add them via [composer](http://getcomposer.org):
+
+	{
+		"require": {"silverstripe-themes/blackcandymobile": "*"}
+	}
+
+Alternatively, you can start your own mobile theme of course.
 
 ## Configuration
 

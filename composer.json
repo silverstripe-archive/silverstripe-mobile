@@ -15,5 +15,9 @@
 	],
 	"require": {
 		"silverstripe/framework": "~2.3"
+	},
+	"suggests": {
+		"silverstripe-themes/blackcandymobile": "*",
+		"silverstripe-themes/jquerymobile": "*"
 	}
 }

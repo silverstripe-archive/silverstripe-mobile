@@ -5,19 +5,6 @@
  */
 class MobileSiteConfigExtensionTest extends SapphireTest {
 
-	public function setUp() {
-		parent::setUp();
-		MobileSiteConfigExtension::set_theme_copy_path(TEMP_FOLDER . '/mobile-test-copy-theme/');
-	}
-
-	public function testRequireDefaultRecordsCopiesDefaultThemeWhenDefaultThemeSet() {
-		$config = SiteConfig::current_site_config();
-		$config->MobileTheme = 'blackcandymobile';
-		$config->write();
-		$config->requireDefaultRecords();
-		$this->assertTrue(file_exists(TEMP_FOLDER . '/mobile-test-copy-theme/'));
-	}
-
 	public function testMobileSiteTypesField() {
 		$config = SiteConfig::current_site_config();
 		$fields = $config->getCMSFields();
@@ -35,11 +22,6 @@ class MobileSiteConfigExtensionTest extends SapphireTest {
 		$config = SiteConfig::current_site_config();
 		$config->FullSiteDomain = 'mysite.com';
 		$this->assertEquals('http://mysite.com', $config->FullSiteDomainNormalized);
-	}
-
-	public function tearDown() {
-		parent::tearDown();
-		exec('rm -rf ' . TEMP_FOLDER . '/mobile-test-copy-theme/');
 	}
 
 }
