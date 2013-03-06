@@ -12,6 +12,13 @@
 class MobileBrowserDetector {
 
 	/**
+	 * @var Boolean Consider tablet devices as "mobile" devices in {@link is_mobile()}.
+	 * Set to FALSE to force non-mobile display if a tablet is detected,
+	 * or to NULL to fall back to the standard mobile detection.
+	 */
+	public static $tablet_is_mobile = null;
+
+	/**
 	 * List of known mobiles, found in the HTTP_USER_AGENT variable
 	 * @see MobileBrowserDetector::is_mobile() for how they're used.
 	 * 
@@ -66,40 +73,47 @@ class MobileBrowserDetector {
 		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
 		$accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
 
-		switch(true) {
-			case(self::is_iphone()):
-				$isMobile = true;
-				break;
-			case(self::is_android()):
-				$isMobile = true;
-				break;
-			case(self::is_opera_mini()):
-				$isMobile = true;
-				break;
-			case(self::is_blackberry()):
-				$isMobile = true;
-				break;
-			case(self::is_palm()):
-				$isMobile = true;
-				break;
-			case(self::is_win_phone()):
-				$isMobile = true;
-				break;
-			case(self::is_windows()):
-				$isMobile = true;
-				break;
-			case(preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|kindle|mobile|pda|psp|treo)/i', $agent)):
-				$isMobile = true;
-				break;
-			case((strpos($accept, 'text/vnd.wap.wml') !== false) || (strpos($accept, 'application/vnd.wap.xhtml+xml') !== false)):
-				$isMobile = true;
-				break;
-			case(isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])):
-				$isMobile = true;
-				break;
-			case(in_array(strtolower(substr($agent, 0, 4)), self::mobile_index_list())):
-				$isMobile = true;
-				break;
+		$isTablet = self::is_tablet($agent);
+		if(self::$tablet_is_mobile === TRUE && $isTablet) {
+			$isMobile = true;
+		} else if(self::$tablet_is_mobile === FALSE && $isTablet) {
+			$isMobile = false;
+		} else {
+			switch(true) {
+				case(self::is_iphone()):
+					$isMobile = true;
+					break;
+				case(self::is_android()):
+					$isMobile = true;
+					break;
+				case(self::is_opera_mini()):
+					$isMobile = true;
+					break;
+				case(self::is_blackberry()):
+					$isMobile = true;
+					break;
+				case(self::is_palm()):
+					$isMobile = true;
+					break;
+				case(self::is_win_phone()):
+					$isMobile = true;
+					break;
+				case(self::is_windows()):
+					$isMobile = true;
+					break;
+				case(preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|kindle|mobile|pda|psp|treo)/i', $agent)):
+					$isMobile = true;
+					break;
+				case((strpos($accept, 'text/vnd.wap.wml') !== false) || (strpos($accept, 'application/vnd.wap.xhtml+xml') !== false)):
+					$isMobile = true;
+					break;
+				case(isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])):
+					$isMobile = true;
+					break;
+				case(in_array(strtolower(substr($agent, 0, 4)), self::mobile_index_list())):
+					$isMobile = true;
+					break;
+			}
 		}
 
 		if(!headers_sent()) {

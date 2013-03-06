@@ -69,6 +69,9 @@ the one that mobile users of your site will see.
 
 Please keep in mind that the mobile domain must point to your site before it will work.
 
+In order to force extended tablet device detection, set `MobileBrowserDetection::$tablet_is_mobile`
+either to `TRUE` (forces mobile template) or `FALSE` (forces desktop template).
+
 ### Search Engine Optimization ###
 
 The module follows [Google's recommendations](http://googlewebmastercentral.blogspot.com/2011/02/making-websites-mobile-friendly.html)
