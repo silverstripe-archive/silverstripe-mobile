@@ -1,5 +1,7 @@
 # Mobile Module #
 
+[![Build Status](https://secure.travis-ci.org/silverstripe/silverstripe-mobile.png?branch=0.6)](http://travis-ci.org/silverstripe/silverstripe-mobile)
+
 ## Overview ##
 
 The mobile module provides detection for mobile devices,
