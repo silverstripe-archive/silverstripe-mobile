@@ -159,10 +159,11 @@ class MobileSiteConfigExtension extends DataExtension {
 		$fields->addFieldsToTab(
 			'Root.Mobile',
 			array(
-				new OptionsetField('MobileSiteType', _t('MobileSiteConfig.MOBILESITEBEHAVIOUR', 'Mobile site behaviour'), $this->getMobileSiteTypes()),
-				new TextField('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain <small>(e.g. m.mysite.com, needs to be different from "Full site domain")</small>')),
-				new TextField('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain <small>(e.g. mysite.com, usually doesn\'t need to be changed)</small>')),
-				new DropdownField('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes(), '', null, _t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
+				OptionsetField::create('MobileSiteType', _t('MobileSiteConfig.MOBILESITEBEHAVIOUR', 'Mobile site behaviour'), $this->getMobileSiteTypes()),
+				TextField::create('MobileDomain', _t('MobileSiteConfig.MOBILEDOMAIN', 'Mobile domain <small>(e.g. m.mysite.com, needs to be different from "Full site domain")</small>')),
+				TextField::create('FullSiteDomain', _t('MobileSiteConfig.FULLSITEDOMAIN', 'Full site domain <small>(e.g. mysite.com, usually doesn\'t need to be changed)</small>')),
+				DropdownField::create('MobileTheme', _t('MobileSiteConfig.MOBILETHEME', 'Mobile theme'), $this->owner->getAvailableThemes())
+					->setEmptyString(_t('SiteConfig.DEFAULTTHEME', '(Use default theme)'))
 			)
 		);
 	}
