@@ -8,12 +8,12 @@
 
 <% if Menu(2) %>
 	<ul class="menu2" data-role="listview" data-inset="true">
-	<% control Menu(2) %>
+	<% loop Menu(2) %>
 		<li class="$LinkingMode">
 			<a href="$Link" class="<% if isSection %>ui-btn-active<% end_if %>">
 				$MenuTitle
 			</a>
 		</li>
-	<% end_control %>
+	<% end_loop %>
 	</ul>
 <% end_if %>
