@@ -6,6 +6,23 @@
  * @package mobile
  */
 class MobileSiteControllerExtension extends Extension {
+    
+    /**
+     * Instance of mobile detect class
+     * 
+     * @var Mobile_Detect()
+     */
+    protected $mobile_detect;
+    
+    public function getMobileDetect() {
+        return $this->mobile_detect;
+    }
+    
+    public function setMobileDetect($detector) {
+        $this->mobile_detect = $detector;
+        return $this;
+    }
+
 
 	/**
 	 * The expiration time of a cookie set for full site requests
@@ -18,6 +35,12 @@ class MobileSiteControllerExtension extends Extension {
 	 * Stores state information as to which site is currently served.
 	 */
 	private static $is_mobile = false;
+	
+	
+	public function onBeforeInit() {
+	    // Set our mobile detector
+	    $this->owner->setMobileDetect(new Mobile_Detect());
+    }
 
 	/**
 	 * Override the default behavior to ensure that if this is a mobile device
@@ -81,13 +104,13 @@ class MobileSiteControllerExtension extends Extension {
 		}
 
 		// User just wants to see a theme, but no redirect occurs
-		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
+		if($this->owner->getMobileDetect()->isMobile() && $config->MobileSiteType == 'MobileThemeOnly') {
 			SSViewer::set_theme($config->MobileTheme);
 			self::$is_mobile = true;
 		}
 
 		// If on a mobile device, but not on the mobile domain and has been setup for redirection
-		if(!$this->onMobileDomain() && MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'RedirectToDomain') {
+		if(!$this->onMobileDomain() && $this->owner->getMobileDetect()->isMobile() && $config->MobileSiteType == 'RedirectToDomain') {
 			return $this->owner->redirect($config->MobileDomainNormalized, 301);
 		}
 	}
@@ -120,7 +143,7 @@ class MobileSiteControllerExtension extends Extension {
 			return ($fullSiteCookie == 0);
 		}
 		
-		return MobileBrowserDetector::is_mobile();
+		return $this->owner->getMobileDetect()->isMobile();
 	}
 
 	/**
@@ -165,45 +188,4 @@ class MobileSiteControllerExtension extends Extension {
 	public function MobileSiteLink() {
 		return Controller::join_links($this->owner->Link(), '?fullSite=0');
 	}
-
-	/**
-	 * Is the current HTTP_USER_AGENT a known iPhone or iPod Touch
-	 * mobile agent string?
-	 * 
-	 * @return boolean
-	 */
-	public function IsiPhone() {
-		return MobileBrowserDetector::is_iphone();
-	}
-
-	/**
-	 * Is the current HTTP_USER_AGENT a known Android mobile
-	 * agent string?
-	 * 
-	 * @return boolean
-	 */
-	public function IsAndroid() {
-		return MobileBrowserDetector::is_android();
-	}
-
-	/**
-	 * Is the current HTTP_USER_AGENT a known Opera Mini
-	 * agent string?
-	 * 
-	 * @return boolean
-	 */
-	public function IsOperaMini() {
-		return MobileBrowserDetector::is_opera_mini();
-	}
-
-	/**
-	 * Is the current HTTP_USER_AGENT a known Blackberry
-	 * mobile agent string?
-	 * 
-	 * @return boolean
-	 */
-	public function IsBlackBerry() {
-		return MobileBrowserDetector::is_blackberry();
-	}
-
 }
