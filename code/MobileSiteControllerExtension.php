@@ -68,7 +68,7 @@ class MobileSiteControllerExtension extends Extension {
 					return $this->owner->redirect($config->MobileDomainNormalized, 301);
 				}
 
-				SSViewer::set_theme($config->MobileTheme);
+				Config::inst()->update('SSViewer', 'theme', $config->MobileTheme);
 				self::$is_mobile = true;
 				return;
 			}
@@ -76,13 +76,13 @@ class MobileSiteControllerExtension extends Extension {
 
 		// If the user requested the mobile domain, set the right theme
 		if($this->onMobileDomain()) {
-			SSViewer::set_theme($config->MobileTheme);
+			Config::inst()->update('SSViewer', 'theme', $config->MobileTheme);
 			self::$is_mobile = true;
 		}
 
 		// User just wants to see a theme, but no redirect occurs
 		if(MobileBrowserDetector::is_mobile() && $config->MobileSiteType == 'MobileThemeOnly') {
-			SSViewer::set_theme($config->MobileTheme);
+			Config::inst()->update('SSViewer', 'theme', $config->MobileTheme);
 			self::$is_mobile = true;
 		}
 
