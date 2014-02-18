@@ -31,31 +31,26 @@ class MobileSiteConfigExtension extends DataExtension {
 	/**
 	 * Extra statics variable to merge into {@link SiteConfig}
 	 */
-	static $db = array(
+	private static $db = array(
 		// Comma-separated list of mobile domains, without protocol
 		'MobileDomain' => 'Text',
 		// Comma-separated list of non-mobile domains, without protocol
 		'FullSiteDomain' => 'Text',
-				'MobileTheme' => 'Varchar(255)',
+		'MobileTheme' => 'Varchar(255)',
 		'MobileSiteType' => 'Enum("Disabled,RedirectToDomain,MobileThemeOnly","Disabled")'
 	);
 
+	private static $defaults = array(
+		'MobileTheme' => 'blackcandymobile',
+		'MobileSiteType' => 'Disabled'
+	);
 
-	static $defaults = array(
-				'MobileTheme' => 'blackcandymobile',
-				'MobileSiteType' => 'Disabled'
-		);
+	public function populateDefaults() {
+		parent::populateDefaults();
 
-	static function add_to_class($class, $extensionClass, $args = null) {
-		if($class == 'SiteConfig') {
-			Config::inst()->update($class, 'defaults', array(
-				'MobileDomain' => 'm.' . $_SERVER['HTTP_HOST'],
-				'FullSiteDomain' => $_SERVER['HTTP_HOST']
-			));
+		$this->owner->MobileDomain = 'm.' . $_SERVER['HTTP_HOST'];
+		$this->owner->FullSiteDomain = $_SERVER['HTTP_HOST'];
 	}
-		parent::add_to_class($class, $extensionClass, $args);
-	}
-	
 
 	/**
 	 * @return String The first available domain, with the current protocol prefixed,

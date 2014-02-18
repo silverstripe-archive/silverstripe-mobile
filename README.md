@@ -35,7 +35,7 @@ so custom logic and CSS/JavaScript includes can be adapted to mobile usage.
 
 ## Requirements
 
- * SilverStripe 2.4.1 or newer
+ * SilverStripe 3.1 or newer
 
 ## Installation
 
