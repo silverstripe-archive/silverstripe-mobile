@@ -8,6 +8,7 @@ class MobileSiteConfigExtensionTest extends SapphireTest {
 	public function setUp() {
 		parent::setUp();
 		MobileSiteConfigExtension::set_theme_copy_path(TEMP_FOLDER . '/mobile-test-copy-theme/');
+		MobileSiteConfigExtension::copyDefaultTheme();
 	}
 
 	public function testRequireDefaultRecordsCopiesDefaultThemeWhenDefaultThemeSet() {
