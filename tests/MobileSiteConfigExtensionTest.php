@@ -5,6 +5,8 @@
  */
 class MobileSiteConfigExtensionTest extends SapphireTest {
 
+	protected $usesDatabase = true;
+
 	public function testMobileSiteTypesField() {
 		$config = SiteConfig::current_site_config();
 		$fields = $config->getCMSFields();
