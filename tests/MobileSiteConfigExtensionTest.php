@@ -5,6 +5,8 @@
  */
 class MobileSiteConfigExtensionTest extends SapphireTest {
 
+	protected $usesDatabase = true;
+
 	public function setUp() {
 		parent::setUp();
 		MobileSiteConfigExtension::set_theme_copy_path(TEMP_FOLDER . '/mobile-test-copy-theme/');

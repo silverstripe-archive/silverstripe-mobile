@@ -16,11 +16,6 @@ class MobileSiteTreeExtensionTest extends FunctionalTest {
 		'SiteConfig' => array('MobileSiteConfigExtension'),
 	);
 
-	public function setUp() {
-		parent::setUp();
-		MobileSiteConfigExtension::set_theme_copy_path(TEMP_FOLDER . '/mobile-test-copy-theme/');
-	}
-
 	public function testShowsCanonicalLinkOnMobile() {
 		$page = $this->objFromFixture('Page', 'page');
 		

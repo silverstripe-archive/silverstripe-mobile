@@ -52,7 +52,7 @@ class MobileSiteControllerExtension extends Extension {
 		else {
 			$fullSiteCookie = Cookie::get('fullSite');
 		}
-		
+
 		if(is_numeric($fullSiteCookie)) {
 			// Full site requested
 			if($fullSiteCookie) {

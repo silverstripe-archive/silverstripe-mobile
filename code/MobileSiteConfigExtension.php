@@ -8,27 +8,6 @@
 class MobileSiteConfigExtension extends DataExtension {
 
 	/**
-	 * The path the default mobile theme should be copied
-	 * to when {@link SiteConfig} is first created in the database.
-	 * 
-	 * @see MobileSiteConfigExtension::requireDefaultRecords()
-	 * @var string
-	 */
-	protected static $theme_copy_path;
-
-	public static function set_theme_copy_path($path) {
-		self::$theme_copy_path = $path;
-	}
-
-	public static function get_theme_copy_path() {
-		if(!self::$theme_copy_path) {
-			return '../' . THEMES_DIR . '/blackcandymobile';
-		} else {
-			return self::$theme_copy_path;
-		}
-	}
-
-	/**
 	 * Extra statics variable to merge into {@link SiteConfig}
 	 */
 	static $db = array(
@@ -55,6 +34,7 @@ class MobileSiteConfigExtension extends DataExtension {
 		}
 		parent::add_to_class($class, $extensionClass, $args);
 	}
+
 
 
 	/**

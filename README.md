@@ -8,13 +8,18 @@ The mobile module provides detection for mobile devices,
 and can serve a different SilverStripe theme to them.
 The module can either use redirection to a separate mobile
 domain, or serve mobile optimised content under the same URLs.
-It includes a default "blackcandymobile" theme to demonstrate the effects.
 
-Note: The W3C recommends a ["One web" approach](http://www.w3.org/TR/mobile-bp/#d0e347) 
+The codebase relies on server-side device detection based on user agent strings,
+which is an [unreliable](http://www.brettjankord.com/2013/01/10/active-development-on-categorizr-has-come-to-an-end/) way to determine if a device is considered to be "mobile".
+
+The W3C recommends a ["One web" approach](http://www.w3.org/TR/mobile-bp/#d0e347) 
 that uses ["Responsive Design"](http://www.alistapart.com/articles/responsive-web-design/)
 to adapt content, rather than create isolated mobile experiences under their own domain.
 Most of the work on mobile optimization will be in client-side techniques
-like JavaScript and CSS (e.g. through media queries).
+like JavaScript and CSS (e.g. through media queries). 
+
+Responsive design is not covered by this module, and can be achieved with standard
+SilverStripe functionality.
 
 The module also exposes this state in SilverStripe controllers
 so custom logic and CSS/JavaScript includes can be adapted to mobile usage.
@@ -41,13 +46,22 @@ A new theme called "blackcandymobile" will be created in your themes folder afte
 invoking the database (dev) build. This theme is a good starting point which you can modify
 to create your own mobile theme.
 
-If the themes folder can't be written to by the web server during dev/build, please
-manually copy "blackcandymobile" into your themes folder from the mobile folder.
+## Themes
 
-Alternatively, the module contains a "jquerymobile" sample theme
-which creates a basic navigation interface through [jQuery Mobile](http://jquerymobile.com).
-To use this theme, copy it to `/themes` in the same way,
-and set it in your `SiteConfig` as described below.
+We provide two themes as a starting point which you can modify to create your own mobile theme:
+
+ * ["blackcandymobile"](https://github.com/silverstripe-themes/silverstripe-blackcandymobile):
+   Modelled to work with the "blackcandy" theme which comes with the SilverStripe 2.x default installation.
+ * ["jquerymobile"](https://github.com/silverstripe-themes/silverstripe-jquerymobile):
+   Creates a basic navigation interface through [jQuery Mobile](http://jquerymobile.com)
+
+Either download the themes from github, or add them via [composer](http://getcomposer.org):
+
+	{
+		"require": {"silverstripe-themes/blackcandymobile": "*"}
+	}
+
+Alternatively, you can start your own mobile theme of course.
 
 ## Configuration
 
@@ -68,6 +82,9 @@ the one that mobile users of your site will see.
 
 Please keep in mind that the mobile domain must point to your site before it will work.
 
+In order to force extended tablet device detection, set `MobileBrowserDetection::$tablet_is_mobile`
+either to `TRUE` (forces mobile template) or `FALSE` (forces desktop template).
+
 ### Search Engine Optimization ###
 
 The module follows [Google's recommendations](http://googlewebmastercentral.blogspot.com/2011/02/making-websites-mobile-friendly.html)
@@ -85,6 +102,5 @@ Google will detect this change by using a different user agent, and index accord
 
  * Search form in the default theme
  * Integrate with subsites module to serve different content for a mobile site
- * Integrate with third-party mobile detection, e.g. WURFL or Apache Mobile Filter or browscap (see http://nz.php.net/get_browser)
  * Device feature detection e.g. "Does this device support SSL?" or "Does this device support XHTML?" for progressive enhancement
  * Dynamic image insertion and resizing via HTML5 data attributes

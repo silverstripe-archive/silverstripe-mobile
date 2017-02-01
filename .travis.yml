@@ -1,16 +1,18 @@
 # See https://github.com/silverstripe-labs/silverstripe-travis-support for setup details
 
-language: php 
-php: 
- - 5.3
+language: php
 
-env:
- - DB=MYSQL CORE_RELEASE=3.0
- - DB=PGSQL CORE_RELEASE=3.0
+sudo: false
 
 matrix:
   include:
+    - php: 5.3
+      env: DB=MYSQL CORE_RELEASE=3.0
     - php: 5.4
+      env: DB=PGSQL CORE_RELEASE=3.0
+    - php: 5.5
+      env: DB=SQLITE CORE_RELEASE=3.0
+    - php: 5.6
       env: DB=MYSQL CORE_RELEASE=3.0
 
 before_script:
@@ -18,5 +20,5 @@ before_script:
  - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss --require silverstripe/cms
  - cd ~/builds/ss
 
-script: 
- - phpunit mobile/tests/
+script:
+ - vendor/bin/phpunit mobile/tests/

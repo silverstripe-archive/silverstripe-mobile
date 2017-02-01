@@ -1,9 +1,22 @@
 <?php
 /**
- * Helper class for detecting known mobiles agents.
+ * Helper class for detecting known mobile agents.
+ * This is a flawed approach to begin with, since there's no reliable way
+ * to detect "mobile" device characteristics through the user agent string.
+ *
+ * CAUTION: Does NOT detect Windows 8 tablets, since there's no user-agent distinction between
+ * tablets and desktops in Windows 8.
+ *
  * @package mobile
  */
 class MobileBrowserDetector {
+
+	/**
+	 * @var Boolean Consider tablet devices as "mobile" devices in {@link is_mobile()}.
+	 * Set to FALSE to force non-mobile display if a tablet is detected,
+	 * or to NULL to fall back to the standard mobile detection.
+	 */
+	public static $tablet_is_mobile = null;
 
 	/**
 	 * List of known mobiles, found in the HTTP_USER_AGENT variable
@@ -44,17 +57,28 @@ class MobileBrowserDetector {
 	}
 
 	/**
-	 * Is the current HTTP_USER_AGENT a known mobile device string?
+	 * Rough detection of "mobile" browsers based on their user agent strings.
+	 * Includes tablets (see {@link is_tablet()}). Sets HTTP cache headers.
+	 *
+	 * CAUTION: Does NOT detect Windows 8 tablets, since there's no user-agent distinction between
+	 * tablets and desktops in Windows 8.
+	 *
 	 * @see http://mobiforge.com/developing/story/setting-http-headers-advise-transcoding-proxies
-	 * 
+	 *
+	 * @param String User agent (defaults to $_SERVER)
 	 * @return bool
 	 */
-	public static function is_mobile() {
+	public static function is_mobile($agent = null) {
 		$isMobile = false;
-		$agent = $_SERVER['HTTP_USER_AGENT'];
+		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
 		$accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
 
-		switch(true) {
+		$isTablet = self::is_tablet($agent);
+		if(self::$tablet_is_mobile === TRUE && $isTablet) {
+			$isMobile = true;
+		} else if(self::$tablet_is_mobile === FALSE && $isTablet) {
+			$isMobile = false;
+		} else {switch(true) {
 			case(self::is_iphone()):
 				$isMobile = true;
 				break;
@@ -72,8 +96,7 @@ class MobileBrowserDetector {
 				break;
 			case(self::is_win_phone()):
 				$isMobile = true;
-				break;
-			case(self::is_windows()):
+				break;case(self::is_windows()):
 				$isMobile = true;
 				break;
 			case(preg_match('/(up.browser|up.link|mmp|symbian|smartphone|midp|wap|vodafone|o2|pocket|kindle|mobile|pda|psp|treo)/i', $agent)):
@@ -87,7 +110,7 @@ class MobileBrowserDetector {
 				break;
 			case(in_array(strtolower(substr($agent, 0, 4)), self::mobile_index_list())):
 				$isMobile = true;
-				break;
+				break;}
 		}
 
 		if(!headers_sent()) {
@@ -96,5 +119,60 @@ class MobileBrowserDetector {
 		}
 
 		return $isMobile;
+	}
+
+	/**
+	 * Rough detection of "tablet" user agents, based on their user agent string.
+	 *
+	 * CAUTION: Does NOT detect Windows 8 tablets, since there's no user-agent distinction between
+	 * tablets and desktops in Windows 8.
+	 *
+	 * Loosely based off the (now discontinued) Categorizr library:
+	 * http://www.brettjankord.com/2012/01/16/categorizr-a-modern-device-detection-script/
+	 *
+	 * @param String User agent (defaults to $_SERVER)
+	 * @return boolean
+	 */
+	public static function is_tablet($agent = null) {
+		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
+
+		// Check if user agent is a Tablet
+		if(
+			(preg_match('/iP(a|ro)d/i', $agent))
+			|| (preg_match('/tablet/i', $agent)) && (!preg_match('/RX-34/i', $agent)) || (preg_match('/FOLIO/i', $agent))
+		) {
+			return true;
+		}
+		// Check if user agent is an Android Tablet
+		else if (
+			(preg_match('/Linux/i', $agent))
+			&& (preg_match('/Android/i', $agent))
+			&& (!preg_match('/Fennec|mobi|HTC.Magic|HTCX06HT|Nexus.One|SC-02B|fone.945/i', $agent))
+			&& (!preg_match('/Mobile/i', $agent))
+		) {
+			// see http://googlewebmastercentral.blogspot.de/2011/03/mo-better-to-also-detect-mobile-user.html
+			// see http://googlewebmastercentral.blogspot.de/2012/11/giving-tablet-users-full-sized-web.html
+			return true;
+		}
+		// Check if user agent is a Kindle or Kindle Fire
+		else if (
+			(preg_match('/Kindle/i', $agent))
+			|| (preg_match('/Mac.OS/i', $agent))
+			&& (preg_match('/Silk/i', $agent))
+		) {
+			return true;
+		}
+		// Check if user agent is a pre Android 3.0 Tablet
+		else if (
+			(preg_match('/GT-P10|SC-01C|SHW-M180S|SGH-T849|SCH-I800|SHW-M180L|SPH-P100|SGH-I987|zt180|HTC(.Flyer|\_Flyer)|Sprint.ATP51|ViewPad7|pandigital(sprnova|nova)|Ideos.S7|Dell.Streak.7|Advent.Vega|A101IT|A70BHT|MID7015|Next2|nook/i', $agent))
+			|| (preg_match('/MB511/i', $agent))
+			&& (preg_match('/RUTEM/i', $agent))
+		) {
+			return true;
+		}
+		// Browser is either a mobile handset or desktop.
+		else {
+			return false;
+		}
 	}
 }
