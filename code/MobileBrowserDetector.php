@@ -62,9 +62,14 @@ class MobileBrowserDetector {
 	 * @return bool
 	 */
 	public static function is_mobile($agent = null) {
+	  //return true;
 		$isMobile = false;
+       if (isset($_GET['flush']))
+         Session::clear('isMobile');  //makes sure session cache is cleared when flush is requested 
+        $isMobile=Session::get('isMobile');
+       if (!$isMobile&&$isMobile!==0){   
 		if(!$agent) $agent = $_SERVER['HTTP_USER_AGENT'];
-		$accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
+		   $accept = isset($_SERVER['HTTP_ACCEPT']) ? $_SERVER['HTTP_ACCEPT'] : '';
 
 		switch(true) {
 			case(self::is_iphone()):
@@ -101,11 +106,14 @@ class MobileBrowserDetector {
 				$isMobile = true;
 				break;
 		}
-
+		if (!$isMobile) $isMobile=0;
+          Session::set('isMobile', $isMobile);   
+     } 
 		if(!headers_sent()) {
 			header('Cache-Control: no-transform');
 			header('Vary: User-Agent, Accept');
 		}
+     
 
 		return $isMobile;
 	}
